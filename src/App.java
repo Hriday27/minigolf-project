@@ -1,40 +1,69 @@
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
-import java.io.File; /**imports the File( loading the image) */
-import java.io.IOException;/*Imports the exception to handle errors when loading the image.*/ 
-import javax.imageio.ImageIO;/* loading images from a file).*/ 
+
 import java.awt.BorderLayout;
-import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
+import javax.imageio.ImageIO;
+
+class ImagePanel extends JComponent{
+    private Image image;
+    public ImagePanel(Image image) {
+        this.image = image;
+    }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(image, 0, 0, this);
+    }
+}
 
 public class App {  
   
     public static void main(String[] args) {  
-        // Create a new JFrame (the window)
-        JFrame frame = new JFrame("Swing Example");
 
-        // Set the size of the window
-        frame.setSize(600, 800);
-
-        // Set the default close operation (exit when the window is closed)
+        JFrame frame = new JFrame("Minigolf");
+        frame.setSize(600, 550);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Create a JPanel with no layout manager (null layout)
-        JPanel panel = new JPanel();
-        panel.setLayout(null);  // Disable layout manager for absolute positioning
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(600,550));
 
-        // Create a JLabel
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout((new BoxLayout(mainPanel, BoxLayout.Y_AXIS)));
+        mainPanel.setBounds(0,0,600,550);
+
         JLabel label = new JLabel("Minigolf");
+        label.setFont(new Font("Arial", Font.PLAIN, 24));
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        LevelPanel lPanel = new LevelPanel(5);
 
-        // Set custom coordinates and size for the label
-        label.setBounds(frame.getWidth()/2-100, 50, 200, 30);  // x, y, width, height
+        mainPanel.add(Box.createRigidArea(new Dimension(100,50)));
+        mainPanel.add(label);
+        mainPanel.add(lPanel);
+        mainPanel.setOpaque(false);
 
-        // Add the label to the panel
-        panel.add(label);
+        try {
 
-        // Add the panel to the frame
-        frame.add(panel);
+            BufferedImage myImage = ImageIO.read(new File("A:\\Eindhoven\\CBL Project\\Minigolf\\src\\golf.jpg"));
+            ImagePanel ip = new ImagePanel(myImage);
+            ip.setBounds(0,0,600,550);
 
-        // Make the window visible
+            layeredPane.add(ip, JLayeredPane.DEFAULT_LAYER);
+            layeredPane.add(mainPanel, JLayeredPane.PALETTE_LAYER);
+
+            frame.setLayeredPane(layeredPane);
+
+
+        } catch (Exception e) {
+            System.out.println("Image could not be read");
+        }
         frame.setVisible(true);
     }  
 }  
