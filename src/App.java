@@ -50,8 +50,8 @@ public class App {
         mainPanel.setOpaque(false);
 
         try {
-
-            BufferedImage myImage = ImageIO.read(new File("A:\\Eindhoven\\CBL Project\\Minigolf\\src\\golf.jpg"));
+                      
+            BufferedImage myImage = ImageIO.read(new File("C:\\Users\\marti\\Desktop\\Minigolf\\minigolf-project\\src\\golf.jpg")); //*TODO: Make image is displayed withoout the user needing to copy the path of golf.jpg */
             ImagePanel ip = new ImagePanel(myImage);
             ip.setBounds(0,0,600,550);
 
