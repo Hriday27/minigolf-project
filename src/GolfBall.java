@@ -54,6 +54,8 @@ public class GolfBall extends JPanel implements MouseListener, MouseMotionListen
         Graphics2D g2 = (Graphics2D) g;
         g.drawOval(x,y, 50,50);
         g.drawLine(lineX1, lineY1, lineX2, lineY2);
+        g.setColor(Color.BLACK);
+        g.fillOval(100,100, 30,30);
     }
 
     @Override
