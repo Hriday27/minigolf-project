@@ -1,13 +1,12 @@
 
+import java.awt.*;
 import javax.swing.*; 
-import java.awt.*; 
-import java.awt.event.*;  
-import java.util.ArrayList;
 
-public class Level1 extends JPanel{
+public class Level1{
     JFrame frame;
 
     public static void main(String[] args) {
+        JLayeredPane pane;
         JFrame level1Frame = new JFrame("Level 1");
         level1Frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         level1Frame.setSize(new Dimension(800, 800));
@@ -16,21 +15,6 @@ public class Level1 extends JPanel{
         level1Frame.add(level1);
 
         level1Frame.setVisible(true);
-
-        ArrayList<Integer> list1 = new ArrayList<>();
-        list1.add(235);
-        list1.add(750);
-
-        // Second list
-        ArrayList<Integer> list2 = new ArrayList<>();
-        list2.add(235);
-        list2.add(750);
-
-        if (list1.equals(list2)) {
-            System.out.println("The lists are equal." + list1 + " || " + list2);
-        } else {
-            System.out.println("The lists are not equal.");
-        }
 
     }
 
