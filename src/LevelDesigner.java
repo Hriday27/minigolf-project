@@ -14,6 +14,9 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     int ballSpeedX = 0; // Ball speed in x direction
     int ballSpeedY = 0; // Ball speed in y direction
     int currentMouseX, currentMouseY, dragStartX, dragStartY;
+    int holeX = 20; 
+    int holeY = 20;
+
 
     ArrayList<Rectangle> obstacles; // List of rectangular obstacles
     Timer animationTimer;
@@ -64,6 +67,11 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        //Draw the hole
+        g.setColor(Color.black);
+        g.fillOval(holeX,holeY,30,30);
+
 
         // Draw the ball
         g.setColor(Color.white);
@@ -234,7 +242,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
         try {
             // Load the background image
-            BufferedImage background = ImageIO.read(new File("A:\\Eindhoven\\CBL Project\\Minigolf\\src\\texture4.jpg"));
+            BufferedImage background = ImageIO.read(new File("C:\\Users\\marti\\Desktop\\minigolf-project\\src\\texture4.jpg"));
             ImagePanel ip = new ImagePanel(background);
             ip.setBounds(0, 0, 800, 800);
             
@@ -282,7 +290,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
         JLabel label = new JLabel("Your Stats");
         label.setLocation(10,10);
-
+        
         statsBar.add(label);
         statsBar.setVisible(true);
     }
