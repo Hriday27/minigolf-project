@@ -14,6 +14,9 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     int ballSpeedX = 0; // Ball speed in x direction
     int ballSpeedY = 0; // Ball speed in y direction
     int currentMouseX, currentMouseY, dragStartX, dragStartY;
+    int holeX = 20; 
+    int holeY = 20;
+
 
     ArrayList<Rectangle> obstacles; // List of rectangular obstacles
     Timer animationTimer;
@@ -35,6 +38,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         // Generate the frame borders
         generateFrameBorders();
         generateRandomObstacles(); // Add random obstacles to the frame
+        
     }
 
     // Generate the borders of the frame
@@ -61,9 +65,17 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         }
     }
 
+    
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        //Draw the hole
+        g.setColor(Color.black);
+        g.fillOval(holeX,holeY,30,30);
+        
+
 
         // Draw the ball
         g.setColor(Color.white);
@@ -234,7 +246,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
         try {
             // Load the background image
-            BufferedImage background = ImageIO.read(new File("A:\\Eindhoven\\CBL Project\\Minigolf\\src\\texture4.jpg"));
+            BufferedImage background = ImageIO.read(new File("C:\\Users\\marti\\Desktop\\minigolf-project\\src\\texture4.jpg"));
             ImagePanel ip = new ImagePanel(background);
             ip.setBounds(0, 0, 800, 800);
             
@@ -271,21 +283,42 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     }
 
     public void addStatsBar() {
-        int frameX = (screenWidth+levelWidth)/2;
-        int frameY = (screenHeight-levelHeight)/2;
-
+        int frameX = (screenWidth + levelWidth) / 2;
+        int frameY = (screenHeight - levelHeight) / 2;
+    
         JFrame statsBar = new JFrame();
         statsBar.setUndecorated(true);
-        //topBar.getRootPane().setBorder(BorderFactory.createLineBorder(Color.RED, 5));
-        statsBar.setLocation(frameX,frameY); // Centers the frame on the screen
+        statsBar.setLocation(frameX, frameY); // Centers the frame on the screen
         statsBar.setSize(statsBarWidth, levelHeight);
-
-        JLabel label = new JLabel("Your Stats");
-        label.setLocation(10,10);
-
-        statsBar.add(label);
+    
+        // Add a JPanel that will draw rectangles and other components
+        JPanel statsPanel = new JPanel() {
+            
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                
+                // Set background color for the panel
+                g.setColor(Color.ORANGE);
+                g.fillRect(0, 0, getWidth(), getHeight());
+    
+                // Set color for the rectangles
+                g.setColor(Color.BLACK);
+                
+                
+                // Draw sample rectangles for stats visualization
+                g.fillRect(125, 170, 50, 300);  // Rectangle 1
+                
+               
+            };
+        };
+    
+        statsPanel.setSize(statsBarWidth, levelHeight);
+        statsBar.add(statsPanel);
+    
         statsBar.setVisible(true);
     }
+    
 
     public void initialiseLevel(String levelName) {
         addMainGameFrame();
