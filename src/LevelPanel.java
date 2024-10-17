@@ -1,7 +1,5 @@
-import javax.swing.*;
 import java.awt.*;
-import javax.accessibility.AccessibleTextSequence;
-import javax.swing.border.Border;
+import javax.swing.*;
 
 public class LevelPanel extends JPanel {
     // Constructor to set up the panel
