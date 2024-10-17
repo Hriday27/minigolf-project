@@ -16,6 +16,8 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     int currentMouseX, currentMouseY, dragStartX, dragStartY;
 
     ArrayList<Rectangle> obstacles; // List of rectangular obstacles
+    private Image obstacleTexture;
+
     Timer animationTimer;
 
     int levelWidth = 800;
@@ -35,6 +37,12 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         // Generate the frame borders
         generateFrameBorders();
         generateRandomObstacles(); // Add random obstacles to the frame
+
+        try {
+            obstacleTexture = ImageIO.read(new File("A:\\Eindhoven\\CBL Project\\Minigolf\\src\\texture3.jpg"));
+        } catch (Exception e) {
+            System.out.print("Obstacle Texture can't be read.");
+        }
     }
 
     // Generate the borders of the frame
@@ -73,6 +81,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         g.setColor(Color.RED);
         for (Rectangle obstacle : obstacles) {
             g.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            g.drawImage(obstacleTexture, obstacle.x, obstacle.y, obstacle.width, obstacle.height, null);
         }
 
         // Draw the borders
