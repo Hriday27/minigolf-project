@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.imageio.ImageIO;
@@ -16,9 +15,11 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     int currentMouseX, currentMouseY, dragStartX, dragStartY;
     int holeX = 20; 
     int holeY = 20;
-
+    double friction = 0.9;
 
     ArrayList<Rectangle> obstacles; // List of rectangular obstacles
+    private Image obstacleTexture;
+
     Timer animationTimer;
 
     int levelWidth = 800;
@@ -30,19 +31,26 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     int topBarHeight = 50;
 
     public LevelDesigner() {
-        obstacles = new ArrayList<>();
         addMouseListener(this);
         addMouseMotionListener(this);
         animationTimer = new Timer(10, this); // 10ms delay for smooth animation
-
+        obstacles = new ArrayList<>();
         // Generate the frame borders
-        generateFrameBorders();
-        generateRandomObstacles(); // Add random obstacles to the frame
+        generateObstacles();
+        generateRandomObstacles();
+        //generateObstacles(obstacles, obstacleTextures); // Add random obstacles to the frame
+        try{
+            obstacleTexture = ImageIO.read(getClass().getResource("/texture3.jpg"));
+
+        } catch (Exception e) {
+
+        }
+        //g.drawImage(obstacleTexture, obstacle.x, obstacle.y, obstacle.width, obstacle.height, null);
         
     }
 
     // Generate the borders of the frame
-    private void generateFrameBorders() {
+    private void generateObstacles() {
         // Left border
         obstacles.add(new Rectangle(0, 0, 10, getHeight()));
         // Right border
@@ -74,7 +82,6 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         //Draw the hole
         g.setColor(Color.black);
         g.fillOval(holeX,holeY,30,30);
-        
 
 
         // Draw the ball
@@ -83,8 +90,13 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
         // Draw obstacles
         g.setColor(Color.RED);
+        int count = 1;
         for (Rectangle obstacle : obstacles) {
             g.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            g.drawImage(obstacleTexture, obstacle.x, obstacle.y, obstacle.width, obstacle.height, null);
+
+
+            count += 1;
         }
 
         // Draw the borders
@@ -119,12 +131,12 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         int originalY = ballY;
 
         // Update the ball position
-        ballX += ballSpeedX;
-        ballY += ballSpeedY;
+        ballX += ballSpeedX/2;
+        ballY += ballSpeedY/2;
 
         // Slow down the ball (friction)
-        ballSpeedX *= 0.98;
-        ballSpeedY *= 0.98;
+        ballSpeedX *= friction;
+        ballSpeedY *= friction;
 
         // Stop the ball if it moves too slowly
         if (Math.abs(ballSpeedX) < 1) ballSpeedX = 0;
@@ -201,7 +213,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         // Calculate the speed of the ball based on the drag distance
         ballSpeedX = (dragStartX - dragEndX) / 2;
         ballSpeedY = (dragStartY - dragEndY) / 2;
-
+        System.out.println("ball speed x " + ballSpeedX + " ball speed y " + ballSpeedY);
         // Start the animation
         animationTimer.start();
     }
@@ -246,7 +258,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
         try {
             // Load the background image
-            BufferedImage background = ImageIO.read(new File("C:\\Users\\marti\\Desktop\\minigolf-project\\src\\texture4.jpg"));
+            BufferedImage background = ImageIO.read(getClass().getResource("/texture4.jpg"));
             ImagePanel ip = new ImagePanel(background);
             ip.setBounds(0, 0, 800, 800);
             
@@ -290,32 +302,11 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         statsBar.setUndecorated(true);
         statsBar.setLocation(frameX, frameY); // Centers the frame on the screen
         statsBar.setSize(statsBarWidth, levelHeight);
-    
-        // Add a JPanel that will draw rectangles and other components
-        JPanel statsPanel = new JPanel() {
-            
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                
-                // Set background color for the panel
-                g.setColor(Color.ORANGE);
-                g.fillRect(0, 0, getWidth(), getHeight());
-    
-                // Set color for the rectangles
-                g.setColor(Color.BLACK);
-                
-                
-                // Draw sample rectangles for stats visualization
-                g.fillRect(125, 170, 50, 300);  // Rectangle 1
-                
-               
-            };
-        };
-    
-        statsPanel.setSize(statsBarWidth, levelHeight);
-        statsBar.add(statsPanel);
-    
+
+        JLabel label = new JLabel("Your Stats");
+        label.setLocation(10,10);
+        
+        statsBar.add(label);
         statsBar.setVisible(true);
     }
     
