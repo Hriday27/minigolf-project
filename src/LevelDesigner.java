@@ -12,11 +12,14 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     int ballRadius = 10; // Ball radius
     double ballSpeedX = 0; // Ball speed in x direction
     double ballSpeedY = 0; // Ball speed in y direction
+
     int currentMouseX, currentMouseY, dragStartX, dragStartY;
+
     int holeX = 20; 
     int holeY = 20;
     int holeWidth = 30;
     int holeHeight = 30;
+    
     double friction = 0.96;
     private static final int maxSpeed = 45;//Maximum velocity of the ball
     
@@ -70,15 +73,55 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         // constants for window positioning
         int frameX = (screenWidth-levelWidth)/2;
         int frameY = (screenHeight-levelHeight)/2;
-
         // the main game frame
         JFrame mainGameFrame = new JFrame("Mini Golf Game");
         mainGameFrame.setUndecorated(true);
-        mainGameFrame.getRootPane().setBorder(BorderFactory.createLineBorder(Color.RED, 5));
         mainGameFrame.setLocation(frameX, frameY); // Centers the frame on the screen
-
+        
         JPanel masterPanel = new JPanel();
-        masterPanel.setLayout(new FlowLayout());
+        masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.Y_AXIS));
+        
+        // Create header panel with BorderLayout
+        JPanel headerPanel = new JPanel();
+        headerPanel.setPreferredSize(new Dimension(800, 50)); // Set preferred size for the header panel
+        headerPanel.setLayout(new BorderLayout()); // Use BorderLayout to position components
+        masterPanel.add(headerPanel, BorderLayout.NORTH); // Add header panel to the north of the master panel
+        headerPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
+
+        // Add a label to the header panel
+        JLabel levelLabel = new JLabel("Level 1");
+        levelLabel.setFont(new Font("Monospaced", Font.BOLD, 24)); // Set font for the label
+        levelLabel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
+        headerPanel.add(levelLabel, BorderLayout.WEST); // Add label to the west (left) of the header panel
+
+        // Create a styled close button
+        JButton closeButton = new JButton(" X ");
+        closeButton.setFont(new Font("Monospaced", Font.BOLD, 24)); // Set font for the button
+        closeButton.setBackground(Color.RED); // Set background color
+        closeButton.setForeground(Color.WHITE); // Set text color
+        closeButton.setBorder(BorderFactory.createLineBorder(Color.white)); // Set rounded border
+        closeButton.setFocusPainted(false); // Remove focus paint on click
+        closeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Change cursor to hand on hover
+
+        // Add an ActionListener to the close button
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Close the application when the button is clicked
+                mainGameFrame.dispose();
+            }
+        });
+
+        // Add close button to the header panel
+        headerPanel.add(closeButton, BorderLayout.EAST); // Add button to the east (right)
+
+        // Use a separate panel for the close button to push it to the right
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 20));
+
+        buttonPanel.add(closeButton);
+        headerPanel.add(buttonPanel);
+        masterPanel.add(headerPanel);
 
         // layeredPane for imaging and texturing on game panel
         JLayeredPane layeredPane = new JLayeredPane();
@@ -86,12 +129,13 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
         // Add a MouseListener to handle mouse release events
         mainGameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainGameFrame.setSize(levelWidth+statsBarWidth, levelHeight);
-        mainGameFrame.add(this);
+        mainGameFrame.setSize(levelWidth+statsBarWidth, levelHeight + topBarHeight);
+        //mainGameFrame.add(this);
         mainGameFrame.setVisible(true);
 
         this.setBounds(0, 0, levelWidth+statsBarWidth, levelHeight);
         this.setOpaque(false);  // Make LevelDesigner transparent to see the background
+        //this.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
 
         try {
             // Load the background image
@@ -116,8 +160,9 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         this.add(scoreCounter);
 
         // Add a JPanel that will draw rectangles and other components
+        masterPanel.add(layeredPane);
         mainGameFrame.setVisible(true);
-        mainGameFrame.add(layeredPane);
+        mainGameFrame.add(masterPanel);
         mainGameFrame.setVisible(true);
     }
 
@@ -428,82 +473,6 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     public void mouseClicked(MouseEvent e) {}
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
-
-    public void addMainGameFrame() {
-        // constants for window positioning
-        int frameX = (screenWidth-levelWidth)/2;
-        int frameY = (screenHeight-levelHeight)/2;
-
-        // the main game frame
-        JFrame mainGameFrame = new JFrame("Mini Golf Game");
-        mainGameFrame.setUndecorated(true);
-        mainGameFrame.getRootPane().setBorder(BorderFactory.createLineBorder(Color.RED, 5));
-        mainGameFrame.setLocation(frameX, frameY); // Centers the frame on the screen
-
-        JPanel masterPanel = new JPanel();
-        masterPanel.setLayout(new FlowLayout());
-
-        // layeredPane for imaging and texturing on game panel
-        JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setPreferredSize(new Dimension(levelWidth+statsBarWidth, levelHeight));
-
-        // adding the gamepanel to the game mainGameFrame
-        LevelDesigner gamePanel = new LevelDesigner();
-
-        // Add a MouseListener to handle mouse release events
-        mainGameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainGameFrame.setSize(levelWidth+statsBarWidth, levelHeight);
-        mainGameFrame.add(gamePanel);
-        mainGameFrame.setVisible(true);
-
-        gamePanel.setBounds(0, 0, levelWidth+statsBarWidth, levelHeight);
-        gamePanel.setOpaque(false);  // Make LevelDesigner transparent to see the background
-
-        try {
-            // Load the background image
-            BufferedImage background = ImageIO.read(getClass().getResource("/texture4.jpg"));
-            ImagePanel ip = new ImagePanel(background);
-            ip.setBounds(0, 0, 800, 800);
-            
-            // Add background to the DEFAULT layer
-            layeredPane.add(ip, JLayeredPane.DEFAULT_LAYER);
-            
-            // Add the LevelDesigner game to the PALETTE layer (above background)
-            layeredPane.add(gamePanel, JLayeredPane.PALETTE_LAYER);
-            
-        } catch (Exception e) {
-            System.out.println("No image found");
-        }
-
-        // Add a JPanel that will draw rectangles and other components
-        mainGameFrame.setVisible(true);
-        mainGameFrame.add(layeredPane);
-        mainGameFrame.setVisible(true);
-    }
-
-    public void addTopBar(String levelName) {
-        int frameX = (screenWidth - levelWidth)/2;
-        int frameY = (screenHeight - levelHeight)/2 - topBarHeight;
-
-        JFrame topBar = new JFrame();
-        topBar.setUndecorated(true);
-        //topBar.getRootPane().setBorder(BorderFactory.createLineBorder(Color.RED, 5));
-        topBar.setLocation(frameX,frameY); // Centers the frame on the screen
-        topBar.setSize(levelWidth + statsBarWidth, topBarHeight);
-
-        JLabel label = new JLabel(levelName);
-        label.setLocation(10,10);
-
-        topBar.add(label);
-        topBar.setVisible(true);
-
-    }
-
-    public void initialiseLevel(String levelName) {
-        addMainGameFrame();
-        addTopBar(levelName);
-        //addStatsBar();
-    }
 
     // ImagePanel class to draw the background image
     static class ImagePanel extends JPanel {
