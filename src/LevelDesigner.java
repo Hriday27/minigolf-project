@@ -5,17 +5,26 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.io.IOException;
 
 public class LevelDesigner extends JPanel implements MouseListener, MouseMotionListener, ActionListener {
     int ballX = 400; // Initial ball position (x)
     int ballY = 300; // Initial ball position (y)
     int ballRadius = 10; // Ball radius
-    int ballSpeedX = 0; // Ball speed in x direction
-    int ballSpeedY = 0; // Ball speed in y direction
+    double ballSpeedX = 0; // Ball speed in x direction
+    double ballSpeedY = 0; // Ball speed in y direction
     int currentMouseX, currentMouseY, dragStartX, dragStartY;
     int holeX = 20; 
     int holeY = 20;
-    double friction = 0.9;
+    double friction = 0.96;
+    private static final int maxSpeed = 45;//Maximum velocity of the ball
+    int meterHeight = 300;     // Max height of the velocity meter
+    int velocity;              // To store the calculated velocity
+    int scaledVelocity;     // To store the scaled velocity valu
+    private JPanel statsPanel;
+    
+    
+    
 
     ArrayList<Rectangle> obstacles; // List of rectangular obstacles
     private Image obstacleTexture;
@@ -33,11 +42,11 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     public LevelDesigner() {
         addMouseListener(this);
         addMouseMotionListener(this);
-        animationTimer = new Timer(10, this); // 10ms delay for smooth animation
+        animationTimer = new Timer(20, this); // 10ms delay for smooth animation
         obstacles = new ArrayList<>();
         // Generate the frame borders
         generateObstacles();
-        generateRandomObstacles();
+        //generateRandomObstacles();
         //generateObstacles(obstacles, obstacleTextures); // Add random obstacles to the frame
         try{
             obstacleTexture = ImageIO.read(getClass().getResource("/texture3.jpg"));
@@ -59,10 +68,51 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         obstacles.add(new Rectangle(0, 0, getWidth(), 10));
         // Bottom border
         obstacles.add(new Rectangle(0, getHeight() - 10, getWidth(), 10));
+        //Level 1
+        /*  obstacles.add(new Rectangle(0, 450,300, 40));
+        obstacles.add(new Rectangle(60,350, 300, 40));
+        obstacles.add(new Rectangle(360,350, 40, 240));
+        obstacles.add(new Rectangle(0, 250, 500, 40)); 
+        obstacles.add(new Rectangle(500,150, 40, 400));
+        obstacles.add(new Rectangle(540,510, 150, 40));
+        obstacles.add(new Rectangle(540,350, 150, 40));
+        obstacles.add(new Rectangle(640,430, 150, 40));
+        obstacles.add(new Rectangle(640,250, 150, 40));
+        obstacles.add(new Rectangle(500,0, 40, 100));
+        obstacles.add(new Rectangle(200,50, 40, 150));
+        obstacles.add(new Rectangle(350,60, 150, 40));
+        obstacles.add(new Rectangle(350,150, 150, 40)); */
+
+        obstacles.add(new Rectangle(200,560,500, 40));
+        obstacles.add(new Rectangle(240,520,300 ,40));
+        obstacles.add(new Rectangle(0,420, 700, 40));
+        obstacles.add(new Rectangle(240,460, 300, 40));
+        obstacles.add(new Rectangle(240,460, 300, 40));
+        obstacles.add(new Rectangle(600,320, 100, 100));
+        obstacles.add(new Rectangle(540,220, 260, 40));
+        obstacles.add(new Rectangle(500,220, 40, 100));
+        obstacles.add(new Rectangle(420,180, 40, 240));
+        obstacles.add(new Rectangle(420,140, 300, 40));
+        obstacles.add(new Rectangle(420,0, 40, 70));
+        obstacles.add(new Rectangle(500,70, 40, 70));
+        obstacles.add(new Rectangle(580,0, 40, 70));
+        obstacles.add(new Rectangle(680,70, 40, 70));
+        obstacles.add(new Rectangle(150,0, 40, 200));
+        obstacles.add(new Rectangle(40,160, 140, 40));
+        obstacles.add(new Rectangle(0,260, 240, 40));
+        obstacles.add(new Rectangle(240,40, 40, 260));
+        obstacles.add(new Rectangle(330,0, 40, 340));
+        obstacles.add(new Rectangle(90,340, 280, 40));
+        
+
+        
+       
+       
+        
     }
 
     // Generate random obstacles
-    public void generateRandomObstacles() {
+   /*  public void generateRandomObstacles() {
         Random rand = new Random();
         for (int i = 0; i < 5; i++) { // Generate 5 random rectangles
             int rectX = rand.nextInt(700); // Random x position
@@ -71,7 +121,9 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             int rectHeight = rand.nextInt(50) + 50; // Random height between 50 and 100
             obstacles.add(new Rectangle(rectX, rectY, rectWidth, rectHeight));
         }
-    }
+    }*/
+
+    
 
     @Override
     public void paintComponent(Graphics g) {
@@ -107,15 +159,11 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         g.setColor(Color.BLACK);
         g.drawLine(ballX, ballY, currentMouseX, currentMouseY);
 
-        /*
-         * g.fillRect(0, 0, 5, 600);
-        g.fillRect(795, 0, 5, 600);
-        g.fillRect(0, 595, 800, 5);
-        g.fillRect(0, 0, 800, 5);
-         */
+     
         
     }
 
+   
     // Handle the physics and collisions
     public void actionPerformed(ActionEvent e) {
         moveBall();
@@ -128,17 +176,27 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         int originalX = ballX;
         int originalY = ballY;
 
+        limitBallSpeed();
+
         // Update the ball position
-        ballX += ballSpeedX/2;
-        ballY += ballSpeedY/2;
+        ballX += ballSpeedX;
+        ballY += ballSpeedY;
 
         // Slow down the ball (friction)
         ballSpeedX *= friction;
         ballSpeedY *= friction;
 
-        // Stop the ball if it moves too slowly
-        if (Math.abs(ballSpeedX) < 1) ballSpeedX = 0;
-        if (Math.abs(ballSpeedY) < 1) ballSpeedY = 0;
+        double speed = Math.sqrt(ballSpeedX * ballSpeedX + ballSpeedY * ballSpeedY);
+    
+        // If the overall speed is below a small threshold, stop the ball
+        if (speed < 3) {
+         ballSpeedX = 0;
+         ballSpeedY = 0;
+    }
+   
+    
+
+       
 
         // Check for collisions with the edges of the panel
         if (ballX - ballRadius < 0) {
@@ -164,6 +222,19 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
                 // Resolve the collision based on the original position
                 resolveCollision(originalX, originalY, obstacle);
             }
+        }
+        
+    }
+
+    private void limitBallSpeed() {
+            
+        double speed = Math.sqrt(ballSpeedX * ballSpeedX + ballSpeedY * ballSpeedY);
+    
+        if (speed > maxSpeed) {
+            // Scale down the velocity to keep it within the maximum speed
+            double scale = maxSpeed / speed;
+            ballSpeedX *= scale;
+            ballSpeedY *= scale;
         }
     }
 
@@ -209,20 +280,49 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         int dragEndY = e.getY();
 
         // Calculate the speed of the ball based on the drag distance
-        ballSpeedX = (dragStartX - dragEndX) / 2;
-        ballSpeedY = (dragStartY - dragEndY) / 2;
+        ballSpeedX = (dragStartX - dragEndX) / 2.0;
+        ballSpeedY = (dragStartY - dragEndY) / 2.0;
         System.out.println("ball speed x " + ballSpeedX + " ball speed y " + ballSpeedY);
         // Start the animation
         animationTimer.start();
+        repaint();
     }
+
+   
+
+    
 
     @Override
     public void mouseDragged(MouseEvent e) {
         currentMouseX = e.getX();
         currentMouseY = e.getY();
-        repaint(); // Draw the drag line
+        // Continuously update the velocity based on the drag
+         calculateDragVelocity();  // Calculate new velocity
+         scaledVelocity();         // Scale the velocity for the meter
+
+         
+         
+         repaint(); // Draw the drag line
+          // Repaint the stats panel to update the velocity meter
+          if (statsPanel != null) {
+          statsPanel.repaint();
+           }
+           
+        
+    }
+    
+    public double calculateDragVelocity() {
+        int estimatedBallSpeedX = (dragStartX - currentMouseX) / 2;
+        int estimatedBallSpeedY = (dragStartY - currentMouseY) / 2;
+        velocity = (int) Math.sqrt(estimatedBallSpeedX * estimatedBallSpeedX + estimatedBallSpeedY * estimatedBallSpeedY);
+        return velocity;  // Store velocity for later use
     }
 
+    // Method to scale velocity for the meter
+    public double scaledVelocity() {
+        scaledVelocity =(int) ((velocity / (double) maxSpeed) * meterHeight);
+        return scaledVelocity;  // Store scaled velocity
+    }
     // Unused but required by the interface
     public void mouseMoved(MouseEvent e) {}
     public void mouseClicked(MouseEvent e) {}
@@ -291,23 +391,94 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         topBar.setVisible(true);
 
     }
+    
 
     public void addStatsBar() {
-        int frameX = (screenWidth+levelWidth)/2;
-        int frameY = (screenHeight-levelHeight)/2;
-
+        
+        int frameX = (screenWidth + levelWidth) / 2;
+        int frameY = (screenHeight - levelHeight) / 2;
+    
         JFrame statsBar = new JFrame();
         statsBar.setUndecorated(true);
-        //topBar.getRootPane().setBorder(BorderFactory.createLineBorder(Color.RED, 5));
-        statsBar.setLocation(frameX,frameY); // Centers the frame on the screen
+        statsBar.setLocation(frameX, frameY); // Centers the frame on the screen
         statsBar.setSize(statsBarWidth, levelHeight);
 
-        JLabel label = new JLabel("Your Stats");
-        label.setLocation(10,10);
         
-        statsBar.add(label);
+        
+       
+
+        // Add a JPanel that will draw rectangles and other components
+        JPanel statsPanel = new JPanel() {   
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                
+                
+                
+                
+                
+                
+
+                
+                
+                 // Set background color for the panel
+                 g.setColor(Color.ORANGE);
+                 g.fillRect(0, 0, getWidth(), getHeight());
+
+                  
+                 // Set color for the rectangles
+                 g.setColor(Color.BLACK);
+                 g.fillRect(123, 168, 54, 303);  
+                 g.setColor(Color.DARK_GRAY);
+                 g.fillRect(125, 170,50,100);
+                 g.setColor(Color.gray);
+                 g.fillRect(125, 270,50,100);
+                 g.setColor(Color.LIGHT_GRAY);
+                 g.fillRect(125, 370,50,100);
+
+                 
+                 int meterWidth = 50;   // Width of the meter
+                 int meterX = 125;      // X position of the meter
+                 int meterY = 170;      // Y position of the meter (top)
+
+                 
+
+              
+
+                 
+                  
+             
+                 // Draw the filled portion of the meter based on velocity
+                 if (velocity < maxSpeed / 2) {
+                    g.setColor(Color.GREEN); // Set color to green if below threshold
+                } else {
+                    g.setColor(Color.RED); // Set color to red if above threshold
+                }
+                 g.fillRect(meterX, meterY + (meterHeight - scaledVelocity), meterWidth, scaledVelocity);
+                 System.out.println(scaledVelocity);
+
+
+                 repaint();
+             
+
+                   
+                
+                 
+
+                 
+            
+               
+            };
+        };
+    
+    
+        statsBar.add(statsPanel);
+    
+        
+       
         statsBar.setVisible(true);
     }
+    
 
     public void initialiseLevel(String levelName) {
         addMainGameFrame();
@@ -334,3 +505,5 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     
     }
 }
+    
+   
