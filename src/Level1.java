@@ -21,7 +21,7 @@ public class Level1 {
             ));
             LevelDesigner level1 = new LevelDesigner();
             level1.obstacles.add(new Rectangle(100, 100, 100, 100));
-            level1.initialiseLevel("Level1");
+            //level1.initialiseLevel("Level1");
         });
         
     }

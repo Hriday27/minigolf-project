@@ -38,23 +38,27 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     int statsBarWidth = 300;
     int topBarHeight = 50;
 
-    StatsPanel statsPanel;
-
+    int totalTries;
+    private JLabel scoreCounter;
 
     public LevelDesigner() {
-        this.setLayout(new FlowLayout());
+        this.setLayout(null);
         addMouseListener(this);
         addMouseMotionListener(this);
+
+        // variable initialisation
         animationTimer = new Timer(1, this); // 10ms delay for smooth animation
         obstacles = new ArrayList<>();
-        statsPanel = new StatsPanel();
         powerUps = new ArrayList<>();
         powerUpType = new ArrayList<>();
+
         // Generate the frame borders
         generateObstacles();
         generateRandomObstacles();
         generatePowerUps();
         //generateObstacles(obstacles, obstacleTextures); // Add random obstacles to the frame
+        
+        // initialise images
         try{
             obstacleTexture = ImageIO.read(getClass().getResource("/texture3.jpg"));
             speedUpTexture = ImageIO.read(getClass().getResource("/Speed Up.png"));
@@ -62,8 +66,59 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         } catch (Exception e) {
 
         }
-        //g.drawImage(obstacleTexture, obstacle.x, obstacle.y, obstacle.width, obstacle.height, null);
-        
+
+        // constants for window positioning
+        int frameX = (screenWidth-levelWidth)/2;
+        int frameY = (screenHeight-levelHeight)/2;
+
+        // the main game frame
+        JFrame mainGameFrame = new JFrame("Mini Golf Game");
+        mainGameFrame.setUndecorated(true);
+        mainGameFrame.getRootPane().setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+        mainGameFrame.setLocation(frameX, frameY); // Centers the frame on the screen
+
+        JPanel masterPanel = new JPanel();
+        masterPanel.setLayout(new FlowLayout());
+
+        // layeredPane for imaging and texturing on game panel
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(levelWidth+statsBarWidth, levelHeight));
+
+        // Add a MouseListener to handle mouse release events
+        mainGameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainGameFrame.setSize(levelWidth+statsBarWidth, levelHeight);
+        mainGameFrame.add(this);
+        mainGameFrame.setVisible(true);
+
+        this.setBounds(0, 0, levelWidth+statsBarWidth, levelHeight);
+        this.setOpaque(false);  // Make LevelDesigner transparent to see the background
+
+        try {
+            // Load the background image
+            BufferedImage background = ImageIO.read(getClass().getResource("/texture4.jpg"));
+            ImagePanel ip = new ImagePanel(background);
+            ip.setBounds(0, 0, 800, 800);
+            
+            // Add background to the DEFAULT layer
+            layeredPane.add(ip, JLayeredPane.DEFAULT_LAYER);
+            
+            // Add the LevelDesigner game to the PALETTE layer (above background)
+            layeredPane.add(this, JLayeredPane.PALETTE_LAYER);
+            
+        } catch (Exception e) {
+            System.out.println("No image found");
+        }
+
+        // score counter label
+        scoreCounter = new JLabel("Your Score is: " + totalTries);
+        scoreCounter.setBounds(30 + levelWidth, 10, 300, 30);
+        scoreCounter.setFont(new Font("Monospaced", Font.BOLD, 24));
+        this.add(scoreCounter);
+
+        // Add a JPanel that will draw rectangles and other components
+        mainGameFrame.setVisible(true);
+        mainGameFrame.add(layeredPane);
+        mainGameFrame.setVisible(true);
     }
 
     public static int convertValue(int value, int min1, int max1, int min2, int max2) {
@@ -190,6 +245,8 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             g.setColor(Color.red);
             g.fillRect(meterX, meterBaseY - filledHeight - 100, meterWidth, 100);
         }
+
+        
     }
 
    
@@ -323,6 +380,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     // Handle mouse release (end of the shot)
     @Override
     public void mouseReleased(MouseEvent e) {
+        totalTries += 1;
         int dragEndX = e.getX();
         int dragEndY = e.getY();
 
@@ -333,6 +391,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         // Start the animation
         animationTimer.start();
         repaint();
+        scoreCounter.setText("Your Score is: " + totalTries);
     }
 
    
@@ -390,10 +449,8 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
         // adding the gamepanel to the game mainGameFrame
         LevelDesigner gamePanel = new LevelDesigner();
-        JLabel scoreLabel = new JLabel("Your Score is: ");
-        scoreLabel.setLocation(1000,50);
-        gamePanel.add(scoreLabel);
 
+        // Add a MouseListener to handle mouse release events
         mainGameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainGameFrame.setSize(levelWidth+statsBarWidth, levelHeight);
         mainGameFrame.add(gamePanel);
