@@ -73,7 +73,11 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         
         // initialise images
         try{
-            obstacleTexture = ImageIO.read(getClass().getResource("/texture3.jpg"));
+            if (levelNumber == 1) {
+                obstacleTexture = ImageIO.read(getClass().getResource("/WhiteWall.jpg"));
+            } else if (levelNumber == 2) { 
+                obstacleTexture = ImageIO.read(getClass().getResource("/WoodTexture.jpg"));
+            }
             speedUpTexture = ImageIO.read(getClass().getResource("/Speed Up.png"));
             speedDownTexture = ImageIO.read(getClass().getResource("/Speed Down.png"));
             teleportTexture = ImageIO.read(getClass().getResource("/teleportPanel.png"));
@@ -81,7 +85,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             explodedTexture = ImageIO.read(getClass().getResource("/explosion2.jpg"));
 
         } catch (Exception e) {
-            System.out.println("No image found");
+            System.out.println("No image found" + e);
         }
 
         // constants for window positioning
@@ -103,7 +107,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         headerPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
 
         // Add a label to the header panel
-        JLabel levelLabel = new JLabel("Level 1");
+        JLabel levelLabel = new JLabel("Level " + levelNumber);
         levelLabel.setFont(new Font("Monospaced", Font.BOLD, 24)); // Set font for the label
         levelLabel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
         headerPanel.add(levelLabel, BorderLayout.WEST); // Add label to the west (left) of the header panel
@@ -153,15 +157,28 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
         try {
             // Load the background image
-            BufferedImage background = ImageIO.read(getClass().getResource("/texture4.jpg"));
-            ImagePanel ip = new ImagePanel(background);
-            ip.setBounds(0, 0, 800, 800);
+            if (levelNumber == 1) {
+                BufferedImage background = ImageIO.read(getClass().getResource("/texture4.jpg"));
+                ImagePanel ip = new ImagePanel(background);
+                ip.setBounds(0, 0, 800, 800);
+                
+                // Add background to the DEFAULT layer
+                layeredPane.add(ip, JLayeredPane.DEFAULT_LAYER);
+                
+                // Add the LevelDesigner game to the PALETTE layer (above background)
+                layeredPane.add(this, JLayeredPane.PALETTE_LAYER);
+            } else if (levelNumber == 2) {
+                BufferedImage background = ImageIO.read(getClass().getResource("/FrostTexture.jpg"));
+                ImagePanel ip = new ImagePanel(background);
+                ip.setBounds(0, 0, 800, 800);
+                
+                // Add background to the DEFAULT layer
+                layeredPane.add(ip, JLayeredPane.DEFAULT_LAYER);
+                
+                // Add the LevelDesigner game to the PALETTE layer (above background)
+                layeredPane.add(this, JLayeredPane.PALETTE_LAYER);
+            }
             
-            // Add background to the DEFAULT layer
-            layeredPane.add(ip, JLayeredPane.DEFAULT_LAYER);
-            
-            // Add the LevelDesigner game to the PALETTE layer (above background)
-            layeredPane.add(this, JLayeredPane.PALETTE_LAYER);
             
         } catch (Exception e) {
             System.out.println("No image found");
@@ -197,7 +214,20 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             powerUpType.add(2);
             powerUps.add(new Rectangle(50,300,40,40));
             powerUpType.add(1);
-        } 
+        } else if (levelNumber == 2) {
+            powerUps.add(new Rectangle(300,380,40,40));
+            powerUpType.add(1);
+            powerUps.add(new Rectangle(100,300,40,40));
+            powerUpType.add(1);
+            powerUps.add(new Rectangle(650,10,40,40));
+            powerUpType.add(2);
+            powerUps.add(new Rectangle(725,100,40,40));
+            powerUpType.add(2);
+            powerUps.add(new Rectangle(600,100,40,40));
+            powerUpType.add(2);
+            powerUps.add(new Rectangle(550,75,40,40));
+            powerUpType.add(2);
+        }
         
     }
 
@@ -250,6 +280,44 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             for (int i = 0; i < 13; i++) {
                 obstacleType.add(1);
             }
+
+        } else if (levelNumber == 2) {
+            friction = 0.9;
+
+            ballX = 50;
+            ballY = 550;
+
+            obstacles.add(new Rectangle(200,560,500, 40));
+            obstacles.add(new Rectangle(240,525,300 ,35));
+            obstacles.add(new Rectangle(0,420, 700, 40));
+            obstacles.add(new Rectangle(240,460, 300, 40));
+            obstacles.add(new Rectangle(240,460, 300, 40));
+            obstacles.add(new Rectangle(600,320, 100, 100));
+            obstacles.add(new Rectangle(540,220, 260, 40));
+            obstacles.add(new Rectangle(500,220, 40, 100));
+            obstacles.add(new Rectangle(420,180, 40, 240));
+            obstacles.add(new Rectangle(420,140, 300, 40));
+            obstacles.add(new Rectangle(150,0, 40, 200));
+            obstacles.add(new Rectangle(40,160, 140, 40));
+            obstacles.add(new Rectangle(0,260, 240, 40));
+            obstacles.add(new Rectangle(240,40, 40, 260));
+            obstacles.add(new Rectangle(330,0, 40, 340));
+            obstacles.add(new Rectangle(90,340, 280, 40));
+
+            for (int i = 0; i < 16; i++) {
+                obstacleType.add(1);
+            }
+
+            obstacles.add(new Rectangle(580,0, 40, 70));
+            obstacles.add(new Rectangle(420,0, 40, 70));
+            obstacles.add(new Rectangle(500,70, 40, 70));
+            obstacles.add(new Rectangle(680,70, 40, 70));
+            obstacleType.add(3);
+            obstacleType.add(3);
+            obstacleType.add(3);
+            obstacleType.add(3);
+        } else if (levelNumber == 3) { 
+            
         }
     }
 
