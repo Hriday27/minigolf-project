@@ -53,7 +53,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     int totalTries;
     private JLabel scoreCounter;
 
-    public LevelDesigner() {
+    public LevelDesigner(Integer levelNumber) {
         this.setLayout(null);
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -66,9 +66,9 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         powerUpType = new ArrayList<>();
 
         // Generate the frame borders
-        generateObstacles();
+        generateObstacles(levelNumber);
         //generateRandomObstacles();
-        generatePowerUps();
+        generatePowerUps(levelNumber);
         //generateObstacles(obstacles, obstacleTextures); // Add random obstacles to the frame
         
         // initialise images
@@ -184,17 +184,25 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         return min2 + ((value - min1) * (max2 - min2)) / (max1 - min1);
     }
 
-    public void generatePowerUps() {
-        powerUps.add(new Rectangle(50,50,40,40));
-        powerUpType.add(1);
-        powerUps.add(new Rectangle(200,200,40,40));
-        powerUpType.add(1);
-        powerUps.add(new Rectangle(500,500,40,40));
-        powerUpType.add(2);
+    public void generatePowerUps(Integer levelNumber) {
+        if(levelNumber == 4) {
+            powerUps.add(new Rectangle(50,50,40,40));
+            powerUpType.add(1);
+            powerUps.add(new Rectangle(200,200,40,40));
+            powerUpType.add(1);
+            powerUps.add(new Rectangle(500,500,40,40));
+            powerUpType.add(2);
+        } else if (levelNumber == 1) {
+            powerUps.add(new Rectangle(550,200,40,40));
+            powerUpType.add(2);
+            powerUps.add(new Rectangle(50,300,40,40));
+            powerUpType.add(1);
+        } 
+        
     }
 
     // Generate the borders of the frame
-    private void generateObstacles() {
+    private void generateObstacles(Integer levelNumber) {
         // Left border
         obstacles.add(new Rectangle(0, 0, 10, getHeight()));
         obstacleType.add(1); // Add corresponding type
@@ -212,14 +220,37 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         obstacleType.add(1); // Add corresponding type
 
         // Custom obstacle
-        obstacles.add(new Rectangle(50, 50, 100, 100));
+        /*obstacles.add(new Rectangle(50, 50, 100, 100));
         obstacleType.add(2); // Add corresponding type for teleport obstacle
 
         obstacles.add(new Rectangle(600, 500, 100, 100));
         obstacleType.add(2); // Add corresponding type for teleport obstacle
 
         obstacles.add(new Rectangle(300,500,100,100));
-        obstacleType.add(3); // Add corresponding type for teleport obstacle
+        obstacleType.add(3); // Add corresponding type for teleport obstacle*/
+
+        if (levelNumber == 1) {
+            ballX = 50;
+            ballY = 550;
+            
+            obstacles.add(new Rectangle(0, 450,300, 40));
+            obstacles.add(new Rectangle(60,350, 300, 40));
+            obstacles.add(new Rectangle(360,350, 40, 240));
+            obstacles.add(new Rectangle(0, 250, 500, 40)); 
+            obstacles.add(new Rectangle(500,150, 40, 400));
+            obstacles.add(new Rectangle(540,510, 150, 40));
+            obstacles.add(new Rectangle(540,350, 150, 40));
+            obstacles.add(new Rectangle(640,430, 150, 40));
+            obstacles.add(new Rectangle(640,250, 150, 40));
+            obstacles.add(new Rectangle(500,0, 40, 100));
+            obstacles.add(new Rectangle(200,50, 40, 150));
+            obstacles.add(new Rectangle(350,60, 150, 40));
+            obstacles.add(new Rectangle(350,150, 150, 40)); 
+
+            for (int i = 0; i < 13; i++) {
+                obstacleType.add(1);
+            }
+        }
     }
 
     // Generate random obstacles
@@ -549,8 +580,8 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         int dragEndY = e.getY();
 
         // Calculate the speed of the ball based on the drag distance
-        ballSpeedX = (dragStartX - dragEndX) / 2.0;
-        ballSpeedY = (dragStartY - dragEndY) / 2.0;
+        ballSpeedX = (dragStartX - dragEndX) / 5.0;
+        ballSpeedY = (dragStartY - dragEndY) / 5.0;
         System.out.println("ball speed x " + ballSpeedX + " ball speed y " + ballSpeedY);
         // Start the animation
         animationTimer.start();
