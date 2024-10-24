@@ -334,7 +334,35 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
                 g.fillRect(meterX, meterBaseY - filledHeight - 100, meterWidth, 100);
             }
         } else {
-            
+            g.drawImage(explodedTexture, 0,0,levelWidth,levelHeight,null);
+
+            JLabel youLost = new JLabel("Death by TNT");
+            youLost.setBounds(60 + levelWidth, 550, 300, 30);
+            youLost.setFont(new Font("Monospaced", Font.BOLD, 24));
+            youLost.setForeground(Color.red);
+            this.add(youLost);
+
+            JButton restart = new JButton("Restart");
+            restart.setBounds(50 + levelWidth, 475, 200, 50);
+            restart.setFont(new Font("Monospaced", Font.BOLD, 24));
+            restart.setBackground(Color.red);
+            restart.setForeground(Color.white);
+            restart.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            restart.setFocusPainted(false); // Remove focus paint on click
+             // Change cursor to hand on hover
+
+            // Add an ActionListener to the close button
+            restart.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Close the application when the button is clicked
+                    Level1 l1 = new Level1();
+                    l1.main(null);
+                }
+            });
+            this.add(restart);
+
+            animationTimer.stop();
         }
     }
 
