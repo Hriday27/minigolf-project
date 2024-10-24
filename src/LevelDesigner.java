@@ -1,10 +1,13 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.*;
 import javax.swing.*;
+
 
 public class LevelDesigner extends JPanel implements MouseListener, MouseMotionListener, ActionListener {
     int ballX = 400; // Initial ball position (x)
@@ -29,7 +32,13 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     private Image speedDownTexture;
 
     ArrayList<Rectangle> obstacles; // List of rectangular obstacles
+    ArrayList<Integer> obstacleType;
+
     private Image obstacleTexture;
+    private Image teleportTexture;
+    private Image dynamiteTexture;
+    private Image explodedTexture;
+    private boolean exploded = false;
 
     Timer animationTimer;
 
@@ -52,12 +61,13 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         // variable initialisation
         animationTimer = new Timer(1, this); // 10ms delay for smooth animation
         obstacles = new ArrayList<>();
+        obstacleType = new ArrayList<>();
         powerUps = new ArrayList<>();
         powerUpType = new ArrayList<>();
 
         // Generate the frame borders
         generateObstacles();
-        generateRandomObstacles();
+        //generateRandomObstacles();
         generatePowerUps();
         //generateObstacles(obstacles, obstacleTextures); // Add random obstacles to the frame
         
@@ -66,8 +76,12 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             obstacleTexture = ImageIO.read(getClass().getResource("/texture3.jpg"));
             speedUpTexture = ImageIO.read(getClass().getResource("/Speed Up.png"));
             speedDownTexture = ImageIO.read(getClass().getResource("/Speed Down.png"));
-        } catch (Exception e) {
+            teleportTexture = ImageIO.read(getClass().getResource("/teleportPanel.png"));
+            dynamiteTexture = ImageIO.read(getClass().getResource("/dynamitePanel.png"));
+            explodedTexture = ImageIO.read(getClass().getResource("/explosion2.jpg"));
 
+        } catch (Exception e) {
+            System.out.println("No image found");
         }
 
         // constants for window positioning
@@ -183,12 +197,29 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     private void generateObstacles() {
         // Left border
         obstacles.add(new Rectangle(0, 0, 10, getHeight()));
+        obstacleType.add(1); // Add corresponding type
+
         // Right border
         obstacles.add(new Rectangle(getWidth() - 10, 0, 10, getHeight()));
+        obstacleType.add(1); // Add corresponding type
+
         // Top border
         obstacles.add(new Rectangle(0, 0, getWidth(), 10));
+        obstacleType.add(1); // Add corresponding type
+
         // Bottom border
         obstacles.add(new Rectangle(0, getHeight() - 10, getWidth(), 10));
+        obstacleType.add(1); // Add corresponding type
+
+        // Custom obstacle
+        obstacles.add(new Rectangle(50, 50, 100, 100));
+        obstacleType.add(2); // Add corresponding type for teleport obstacle
+
+        obstacles.add(new Rectangle(600, 500, 100, 100));
+        obstacleType.add(2); // Add corresponding type for teleport obstacle
+
+        obstacles.add(new Rectangle(300,500,100,100));
+        obstacleType.add(3); // Add corresponding type for teleport obstacle
     }
 
     // Generate random obstacles
@@ -200,6 +231,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             int rectWidth = rand.nextInt(50) + 50; // Random width between 50 and 100
             int rectHeight = rand.nextInt(50) + 50; // Random height between 50 and 100
             obstacles.add(new Rectangle(rectX, rectY, rectWidth, rectHeight));
+            obstacleType.add(1);
         }
     }
 
@@ -207,91 +239,103 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        if(!exploded) {
+            super.paintComponent(g);
 
-        //Draw the hole
-        g.setColor(Color.black);
-        g.fillOval(holeX,holeY,holeHeight, holeWidth);
+            //Draw the hole
+            g.setColor(Color.black);
+            g.fillOval(holeX,holeY,holeHeight, holeWidth);
 
-        // Draw the ball
-        g.setColor(Color.white);
-        g.fillOval(ballX - ballRadius, ballY - ballRadius, ballRadius * 2, ballRadius * 2);
+            // Draw the ball
+            g.setColor(Color.white);
+            g.fillOval(ballX - ballRadius, ballY - ballRadius, ballRadius * 2, ballRadius * 2);
 
-        // Draw obstacles
-        g.setColor(Color.RED);
-        int count = 1;
-        for (Rectangle obstacle : obstacles) {
-            g.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-            g.drawImage(obstacleTexture, obstacle.x, obstacle.y, obstacle.width, obstacle.height, null);
-            count += 1;
-        }
-
-        // Draw Powerups
-        int count2 = 0;
-        for (Rectangle powerUp : powerUps) {
-            if(powerUpType.get(count2) == 1) {
-                g.drawImage(speedUpTexture, powerUp.x, powerUp.y, powerUp.width, powerUp.height, null);
-            } else if (powerUpType.get(count2) == 2) {
-                g.drawImage(speedDownTexture, powerUp.x, powerUp.y, powerUp.width, powerUp.height, null);
+            // Draw obstacles
+            g.setColor(Color.RED);
+            int count = 0;
+            for (Rectangle obstacle : obstacles) {
+                g.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                if (obstacleType.get(count) == 1) {
+                    // Draw normal texture
+                    g.drawImage(obstacleTexture, obstacle.x, obstacle.y, obstacle.width, obstacle.height, null);
+                } else if (obstacleType.get(count) == 2) {
+                    // teleport texture
+                    g.drawImage(teleportTexture, obstacle.x, obstacle.y, obstacle.width, obstacle.height, null);
+                } else if (obstacleType.get(count) == 3) {
+                    // teleport texture
+                    g.drawImage(dynamiteTexture, obstacle.x, obstacle.y, obstacle.width, obstacle.height, null);
+                }
+                
+                count++;
             }
-            count2++;
+
+            // Draw Powerups
+            int count2 = 0;
+            for (Rectangle powerUp : powerUps) {
+                if(powerUpType.get(count2) == 1) {
+                    g.drawImage(speedUpTexture, powerUp.x, powerUp.y, powerUp.width, powerUp.height, null);
+                } else if (powerUpType.get(count2) == 2) {
+                    g.drawImage(speedDownTexture, powerUp.x, powerUp.y, powerUp.width, powerUp.height, null);
+                }
+                count2++;
+            }
+
+
+            // Draw line showing the drag direction
+            g.setColor(Color.BLACK);
+            g.drawLine(ballX, ballY, currentMouseX, currentMouseY);
+
+            // draw stats
+            // Set color for the rectangles
+            g.setColor(Color.BLACK);
+            g.fillRect(123+levelWidth, 168, 54, 303);
+
+            int actualVelocity = 2 * (int) Math.pow(Math.pow(dragStartX-currentMouseX,2)+Math.pow(dragStartY-currentMouseY, 2),0.5);
+            int mappedVelocity = convertValue(actualVelocity, 0, (int) Math.pow(Math.pow(800,2)+Math.pow(600,2),0.5), 0, 300);
+
+            // Draw the speed meters
+            int meterBaseY = 470;  // This represents the bottom position of the meter (change to your desired base height)
+            int meterX = 125 + levelWidth;  // X position for all meters
+            int meterWidth = 50;  // Width of the meter
+
+            // Initialize cumulative height (how much of the bar has been filled so far)
+            int filledHeight = 0;
+
+            // Draw the yellow section (velocity 0-100)
+            if (mappedVelocity > 0 && mappedVelocity <= 100) {
+                g.setColor(Color.yellow);
+                g.fillRect(meterX, meterBaseY - mappedVelocity, meterWidth, mappedVelocity);
+                filledHeight = mappedVelocity;
+            } else if (mappedVelocity > 100) {
+                g.setColor(Color.yellow);
+                g.fillRect(meterX, meterBaseY - 100, meterWidth, 100);
+                filledHeight = 100;
+            }
+
+            // Draw the green section (velocity 100-200)
+            if (mappedVelocity > 100 && mappedVelocity <= 200) {
+                g.setColor(Color.green);
+                int greenHeight = mappedVelocity - 100;
+                g.fillRect(meterX, meterBaseY - filledHeight - greenHeight, meterWidth, greenHeight);
+                filledHeight += greenHeight;
+            } else if (mappedVelocity > 200) {
+                g.setColor(Color.green);
+                g.fillRect(meterX, meterBaseY - filledHeight - 100, meterWidth, 100);
+                filledHeight += 100;
+            }
+
+            // Draw the red section (velocity 200-300)
+            if (mappedVelocity > 200 && mappedVelocity <= 300) {
+                g.setColor(Color.red);
+                int redHeight = mappedVelocity - 200;
+                g.fillRect(meterX, meterBaseY - filledHeight - redHeight, meterWidth, redHeight);
+            } else if (mappedVelocity > 300) {
+                g.setColor(Color.red);
+                g.fillRect(meterX, meterBaseY - filledHeight - 100, meterWidth, 100);
+            }
+        } else {
+            
         }
-
-
-        // Draw line showing the drag direction
-        g.setColor(Color.BLACK);
-        g.drawLine(ballX, ballY, currentMouseX, currentMouseY);
-
-        // draw stats
-        // Set color for the rectangles
-        g.setColor(Color.BLACK);
-        g.fillRect(123+levelWidth, 168, 54, 303);
-
-        int actualVelocity = 2 * (int) Math.pow(Math.pow(dragStartX-currentMouseX,2)+Math.pow(dragStartY-currentMouseY, 2),0.5);
-        int mappedVelocity = convertValue(actualVelocity, 0, (int) Math.pow(Math.pow(800,2)+Math.pow(600,2),0.5), 0, 300);
-
-        // Draw the speed meters
-        int meterBaseY = 470;  // This represents the bottom position of the meter (change to your desired base height)
-        int meterX = 125 + levelWidth;  // X position for all meters
-        int meterWidth = 50;  // Width of the meter
-
-        // Initialize cumulative height (how much of the bar has been filled so far)
-        int filledHeight = 0;
-
-        // Draw the yellow section (velocity 0-100)
-        if (mappedVelocity > 0 && mappedVelocity <= 100) {
-            g.setColor(Color.yellow);
-            g.fillRect(meterX, meterBaseY - mappedVelocity, meterWidth, mappedVelocity);
-            filledHeight = mappedVelocity;
-        } else if (mappedVelocity > 100) {
-            g.setColor(Color.yellow);
-            g.fillRect(meterX, meterBaseY - 100, meterWidth, 100);
-            filledHeight = 100;
-        }
-
-        // Draw the green section (velocity 100-200)
-        if (mappedVelocity > 100 && mappedVelocity <= 200) {
-            g.setColor(Color.green);
-            int greenHeight = mappedVelocity - 100;
-            g.fillRect(meterX, meterBaseY - filledHeight - greenHeight, meterWidth, greenHeight);
-            filledHeight += greenHeight;
-        } else if (mappedVelocity > 200) {
-            g.setColor(Color.green);
-            g.fillRect(meterX, meterBaseY - filledHeight - 100, meterWidth, 100);
-            filledHeight += 100;
-        }
-
-        // Draw the red section (velocity 200-300)
-        if (mappedVelocity > 200 && mappedVelocity <= 300) {
-            g.setColor(Color.red);
-            int redHeight = mappedVelocity - 200;
-            g.fillRect(meterX, meterBaseY - filledHeight - redHeight, meterWidth, redHeight);
-        } else if (mappedVelocity > 300) {
-            g.setColor(Color.red);
-            g.fillRect(meterX, meterBaseY - filledHeight - 100, meterWidth, 100);
-        }
-
-        
     }
 
    
@@ -344,12 +388,59 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         }
 
         // Check for collisions with the rectangles
+        int count2 = 0;
         for (Rectangle obstacle : obstacles) {
             if (new Rectangle(ballX - ballRadius, ballY - ballRadius, ballRadius * 2, ballRadius * 2).intersects(obstacle)) {
-                // Resolve the collision based on the original position
-                System.out.println("Intersected true");
-                resolveCollision(originalX, originalY, obstacle);
+                if(obstacleType.get(count2) == 2) {
+                    // To store the indices where the value equals 2
+                    ArrayList<Integer> indices = new ArrayList<>();
+
+                    // Loop through the list and check for occurrences of 2
+                    for (int i = 0; i < obstacleType.size(); i++) {
+                        if (obstacleType.get(i) == 2) {
+                            indices.add(i);
+                        }
+                    }
+
+                    if(indices.get(0) == count2) {
+                        ballSpeedX = 0;
+                        ballSpeedY = 0;
+                        ballX = obstacles.get(indices.get(1)).x + obstacles.get(indices.get(1)).width/2;
+                        ballY = obstacles.get(indices.get(1)).y - 20;
+                    } else {
+                        ballSpeedX = 0;
+                        ballSpeedY = 0;
+                        ballX = obstacles.get(indices.get(0)).x + obstacles.get(indices.get(0)).width/2;
+                        ballY = obstacles.get(indices.get(0)).y - 20;
+                    }
+                } else if (obstacleType.get(count2) == 3) {
+                    exploded = true;
+                    
+                    try {
+                        // Open an audio input stream.
+
+                        File soundFile = new File("sounds/explosion.wav");
+                        AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
+            
+                        // Get a sound clip resource.
+                        Clip clip = AudioSystem.getClip();
+            
+                        // Open the audio clip and load the samples from the audio input stream.
+                        clip.open(audioStream);
+            
+                        // Start playing the sound.
+                        clip.start();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // Resolve the collision based on the original position
+                    
+                    resolveCollision(originalX, originalY, obstacle);
+                } 
+                
             }
+            count2++;
         }
 
         // Check for collisions with the power ups
