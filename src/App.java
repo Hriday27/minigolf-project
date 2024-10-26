@@ -1,16 +1,8 @@
-import javax.swing.*;
-import javax.swing.text.JTextComponent;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-
-import javax.imageio.ImageIO;
+import javax.swing.*;
 
 class ImagePanel extends JComponent{
     private Image image;
@@ -25,7 +17,7 @@ class ImagePanel extends JComponent{
 }
 
 public class App {  
-  
+    private static Image background;
     public static void main(String[] args) {  
 
         JFrame frame = new JFrame("Minigolf");
@@ -51,8 +43,8 @@ public class App {
 
         try {
                       
-            BufferedImage myImage = ImageIO.read(new File("C:\\Users\\marti\\Desktop\\Minigolf\\minigolf-project\\src\\golf.jpg")); //*TODO: Make image is displayed withoout the user needing to copy the path of golf.jpg */
-            ImagePanel ip = new ImagePanel(myImage);
+            //background = ImageIO.read(getClass().getResource("/golf.jpg")); //*TODO: Make image is displayed withoout the user needing to copy the path of golf.jpg */
+            ImagePanel ip = new ImagePanel(background);
             ip.setBounds(0,0,600,550);
 
             layeredPane.add(ip, JLayeredPane.DEFAULT_LAYER);
