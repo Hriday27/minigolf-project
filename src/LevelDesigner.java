@@ -3,6 +3,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
@@ -15,7 +16,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     int ballRadius = 10; // Ball radius
     double ballSpeedX = 0; // Ball speed in x direction
     double ballSpeedY = 0; // Ball speed in y direction
-
+    int levelNum;
     int currentMouseX, currentMouseY, dragStartX, dragStartY;
 
     int holeX = 20; 
@@ -56,6 +57,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     private JLabel scoreCounter;
 
     public LevelDesigner(Integer levelNumber) {
+        levelNum = levelNumber;
         this.setLayout(null);
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -81,7 +83,8 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
                 obstacleTexture = ImageIO.read(getClass().getResource("/WoodTexture.jpg"));
             } else if (levelNumber == 3) {
                 obstacleTexture = ImageIO.read(getClass().getResource("/WhiteWall.jpg"));
-
+            } else if (levelNumber == 4) {
+                obstacleTexture = ImageIO.read(getClass().getResource("/cloud2.png"));
             }
             speedUpTexture = ImageIO.read(getClass().getResource("/Speed Up.png"));
             speedDownTexture = ImageIO.read(getClass().getResource("/Speed Down.png"));
@@ -192,6 +195,16 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
                 
                 // Add the LevelDesigner game to the PALETTE layer (above background)
                 layeredPane.add(this, JLayeredPane.PALETTE_LAYER);
+            } else if (levelNumber == 4) {
+                BufferedImage background = ImageIO.read(getClass().getResource("/tornado.png"));
+                ImagePanel ip = new ImagePanel(background);
+                ip.setBounds(0, 0, 800, 800);
+                
+                // Add background to the DEFAULT layer
+                layeredPane.add(ip, JLayeredPane.DEFAULT_LAYER);
+                
+                // Add the LevelDesigner game to the PALETTE layer (above background)
+                layeredPane.add(this, JLayeredPane.PALETTE_LAYER);
             }
             
             
@@ -218,12 +231,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
     public void generatePowerUps(Integer levelNumber) {
         if(levelNumber == 4) {
-            powerUps.add(new Rectangle(50,50,40,40));
-            powerUpType.add(1);
-            powerUps.add(new Rectangle(200,200,40,40));
-            powerUpType.add(1);
-            powerUps.add(new Rectangle(500,500,40,40));
-            powerUpType.add(2);
+            
         } else if (levelNumber == 1) {
             powerUps.add(new Rectangle(550,200,40,40));
             powerUpType.add(2);
@@ -438,6 +446,75 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
             obstacles.add(new Rectangle(200,350,500,100));
             obstacleType.add(1);
+        } else if (levelNumber == 4) {
+            ballX = 360;
+            ballY = 540;
+            holeY = 40;
+            // starting obstacles
+            obstacles.add(new Rectangle(0,500,350,100));
+            obstacleType.add(1);
+            obstacles.add(new Rectangle(450,500,350,100));
+            obstacleType.add(1);
+            obstacles.add(new Rectangle(350,500,40,20));
+            obstacleType.add(1);
+            obstacles.add(new Rectangle(420,500,50,20));
+            obstacleType.add(1);
+
+            // moving obstacles
+            obstacles.add(new Rectangle(10,400,100,40)); // 8
+            obstacleType.add(3);
+            obstacles.add(new Rectangle(400,400,100,40)); // 9
+            obstacleType.add(3);
+
+            obstacles.add(new Rectangle(200,300,200,40)); // 10
+            obstacleType.add(1);
+            obstacles.add(new Rectangle(430,300,200,40)); // 11
+            obstacleType.add(1);
+
+            obstacles.add(new Rectangle(200,400,100,40)); // 12
+            obstacleType.add(3);
+            obstacles.add(new Rectangle(0,300,100,40)); // 13
+            obstacleType.add(1);
+
+            obstacles.add(new Rectangle(200,200,100,40)); // 14
+            obstacleType.add(1);
+            obstacles.add(new Rectangle(700,200,100,40)); // 15
+            obstacleType.add(1);
+            obstacles.add(new Rectangle(400,200,100,40)); // 16
+            obstacleType.add(3);
+            obstacles.add(new Rectangle(300,200,100,40)); // 17
+            obstacleType.add(1);
+
+            obstacles.add(new Rectangle(300,100,200,40)); // 18
+            obstacleType.add(1);
+            obstacles.add(new Rectangle(500,100,100,40)); // 19
+            obstacleType.add(3);
+            obstacles.add(new Rectangle(600,100,100,40)); // 20
+            obstacleType.add(1);
+            obstacles.add(new Rectangle(0,100,150,40)); // 21
+            obstacleType.add(1);
+
+            obstacles.add(new Rectangle(0,0,100,30)); // 21
+            obstacleType.add(3);
+            obstacles.add(new Rectangle(100,0,100,30)); // 21
+            obstacleType.add(3);
+            obstacles.add(new Rectangle(200,0,100,30)); // 21
+            obstacleType.add(3);
+            obstacles.add(new Rectangle(300,0,100,30)); // 21
+            obstacleType.add(3);
+            obstacles.add(new Rectangle(400,0,100,30)); // 21
+            obstacleType.add(3);
+            obstacles.add(new Rectangle(500,0,100,30)); // 21
+            obstacleType.add(3);
+            obstacles.add(new Rectangle(600,0,100,30)); // 21
+            obstacleType.add(3);
+            obstacles.add(new Rectangle(700,0,100,30)); // 21
+            obstacleType.add(3);
+
+            obstacles.add(new Rectangle(700,300,100,40)); // 21
+            obstacleType.add(1);
+            obstacles.add(new Rectangle(0,200,100,40)); // 21
+            obstacleType.add(1);
         }
     }
 
@@ -553,6 +630,8 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
                     g.setColor(Color.red);
                     g.fillRect(meterX, meterBaseY - filledHeight - 100, meterWidth, 100);
                 }
+
+
             } else {
                 g.drawImage(ballInHoleTexture, 0,0,levelWidth,levelHeight,null);
                 JLabel youWon = new JLabel("You WON!!");
@@ -595,12 +674,58 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         }
     }
 
-   
+    boolean reverseDirection = true;
+    ArrayList<Boolean> movingObstaclesRD = new ArrayList<>(Arrays.asList(true,false,true,true, false, true, true, true, true, true,true,true,true));
+
+    
     // Handle the physics and collisions
     public void actionPerformed(ActionEvent e) {
         moveBall();
+        
+        if (levelNum == 4) {
+            if (reverseDirection) {
+                holeX += 1;
+                if (holeX > 500) {
+                    reverseDirection = false;
+                }
+            } else if (!reverseDirection) {
+                holeX -= 1;
+                if (holeX < 20) {
+                    reverseDirection = true;
+                }
+            }
+        }
+        
+        moveObstacle(0, 400, 8, 0);
+        moveObstacle(400, 700, 9, 1);
+        moveObstacle(0, 300, 10, 2);
+        moveObstacle(350, 600, 11, 3);
+        moveObstacle(200, 500, 12, 4);
+        moveObstacle(200, 500, 13, 5);
+        moveObstacle(0, 200, 14, 6);
+        moveObstacle(500, 700, 15, 7);
+        moveObstacle(300, 500, 16, 8);
+        moveObstacle(0, 400, 17, 9);
+        moveObstacle(0, 300, 18, 10);
+        moveObstacle(300, 500, 19, 11);
+        moveObstacle(600, 700, 20, 12);
         repaint();
     }
+
+    public void moveObstacle(int startX, int endX, int movingObstacleNumber, int movingObstacleBool) {
+        if (movingObstaclesRD.get(movingObstacleBool)) {
+            obstacles.get(movingObstacleNumber).x += 1;
+            if (obstacles.get(movingObstacleNumber).x > endX) {
+                movingObstaclesRD.set(movingObstacleBool,false);
+            }
+        } else if (!movingObstaclesRD.get(movingObstacleBool)) {
+            obstacles.get(movingObstacleNumber).x -= 1;
+            if (obstacles.get(movingObstacleNumber).x < startX) {
+                movingObstaclesRD.set(movingObstacleBool,true);
+            }
+        }
+    }
+
 
     // Move the ball based on its current speed
     public void moveBall() {

@@ -11,7 +11,7 @@ public class Level1 {
         SwingUtilities.invokeLater(()->{
             // Assuming LevelDesigner is your class that takes these two ArrayLists
 
-            LevelDesigner level1 = new LevelDesigner(3);
+            LevelDesigner level1 = new LevelDesigner(4);
             //level1.initialiseLevel("Level1");
         });
         
