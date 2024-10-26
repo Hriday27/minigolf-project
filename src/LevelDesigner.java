@@ -683,6 +683,19 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         moveBall();
         
         if (levelNum == 4) {
+            moveObstacle(0, 400, 8, 0);
+            moveObstacle(400, 700, 9, 1);
+            moveObstacle(0, 300, 10, 2);
+            moveObstacle(350, 600, 11, 3);
+            moveObstacle(200, 500, 12, 4);
+            moveObstacle(200, 500, 13, 5);
+            moveObstacle(0, 200, 14, 6);
+            moveObstacle(500, 700, 15, 7);
+            moveObstacle(300, 500, 16, 8);
+            moveObstacle(0, 400, 17, 9);
+            moveObstacle(0, 300, 18, 10);
+            moveObstacle(300, 500, 19, 11);
+            moveObstacle(600, 700, 20, 12);
             if (reverseDirection) {
                 holeX += 1;
                 if (holeX > 500) {
@@ -696,19 +709,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             }
         }
         
-        moveObstacle(0, 400, 8, 0);
-        moveObstacle(400, 700, 9, 1);
-        moveObstacle(0, 300, 10, 2);
-        moveObstacle(350, 600, 11, 3);
-        moveObstacle(200, 500, 12, 4);
-        moveObstacle(200, 500, 13, 5);
-        moveObstacle(0, 200, 14, 6);
-        moveObstacle(500, 700, 15, 7);
-        moveObstacle(300, 500, 16, 8);
-        moveObstacle(0, 400, 17, 9);
-        moveObstacle(0, 300, 18, 10);
-        moveObstacle(300, 500, 19, 11);
-        moveObstacle(600, 700, 20, 12);
+        
         repaint();
     }
 
