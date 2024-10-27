@@ -1,0 +1,6 @@
+1. Please first extract this zip folder. 
+2. Open the src folder in VS-Code.
+3. Click on HomeScreen.java
+4. Click on the run button. 
+5. The GitHub repository link is: https://github.com/Hriday27/minigolf-project
+6. All the commits, branches and necessary requirements for version control can be seen there. 

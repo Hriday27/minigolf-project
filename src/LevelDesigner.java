@@ -441,6 +441,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             obstacles.add(new Rectangle(200,350,500,100));
             obstacleType.add(1);
         } else if (levelNumber == 4) {
+            
             ballX = 360;
             ballY = 540;
             holeY = 40;
@@ -455,33 +456,33 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             obstacleType.add(1);
 
             // moving obstacles
-            obstacles.add(new Rectangle(10,400,100,40)); // 8
+            obstacles.add(new Rectangle(50,400,100,40)); // 8
             obstacleType.add(3);
-            obstacles.add(new Rectangle(400,400,100,40)); // 9
+            obstacles.add(new Rectangle(320,400,100,40)); // 9
             obstacleType.add(3);
 
-            obstacles.add(new Rectangle(200,300,200,40)); // 10
+            obstacles.add(new Rectangle(20,300,200,40)); // 10
             obstacleType.add(1);
-            obstacles.add(new Rectangle(430,300,200,40)); // 11
+            obstacles.add(new Rectangle(420,300,100,40)); // 11
             obstacleType.add(1);
 
-            obstacles.add(new Rectangle(200,400,100,40)); // 12
+            obstacles.add(new Rectangle(600,400,100,40)); // 12
             obstacleType.add(3);
-            obstacles.add(new Rectangle(0,300,100,40)); // 13
+            obstacles.add(new Rectangle(620,300,50,40)); // 13
             obstacleType.add(1);
 
-            obstacles.add(new Rectangle(200,200,100,40)); // 14
+            obstacles.add(new Rectangle(200,200,50,40)); // 14
             obstacleType.add(1);
-            obstacles.add(new Rectangle(700,200,100,40)); // 15
+            obstacles.add(new Rectangle(700,200,50,40)); // 15
             obstacleType.add(1);
             obstacles.add(new Rectangle(400,200,100,40)); // 16
             obstacleType.add(3);
-            obstacles.add(new Rectangle(300,200,100,40)); // 17
+            obstacles.add(new Rectangle(520,200,100,40)); // 17
             obstacleType.add(1);
 
-            obstacles.add(new Rectangle(300,100,200,40)); // 18
+            obstacles.add(new Rectangle(300,100,100,40)); // 18
             obstacleType.add(1);
-            obstacles.add(new Rectangle(500,100,100,40)); // 19
+            obstacles.add(new Rectangle(450,100,100,40)); // 19
             obstacleType.add(3);
             obstacles.add(new Rectangle(600,100,100,40)); // 20
             obstacleType.add(1);
@@ -505,10 +506,11 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             obstacles.add(new Rectangle(700,0,100,30)); 
             obstacleType.add(3);
 
-            obstacles.add(new Rectangle(700,300,100,40));
+            obstacles.add(new Rectangle(720,300,80,40));
             obstacleType.add(1);
             obstacles.add(new Rectangle(0,200,100,40)); 
             obstacleType.add(1);
+            
         }
     }
 
@@ -567,8 +569,9 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
                 // Set color for the rectangles
                 g.setColor(Color.BLACK);
                 g.fillRect(123+levelWidth, 168, 54, 303);
-
-                int actualVelocity = 2 * (int) Math.pow(Math.pow(dragStartX-currentMouseX,2)+Math.pow(dragStartY-currentMouseY, 2),0.5);
+                
+                
+                int actualVelocity = (int) 4 * (int) Math.pow(Math.pow(dragStartX-currentMouseX,2)+Math.pow(dragStartY-currentMouseY, 2),0.5);
                 int mappedVelocity = convertValue(actualVelocity, 0, (int) Math.pow(Math.pow(800,2)+Math.pow(600,2),0.5), 0, 300);
 
                 // Draw the speed meters
@@ -669,19 +672,19 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         
         if (levelNum == 4) {
             // for the tornado level move the different obstacles
-            moveObstacle(0, 400, 8, 0);
-            moveObstacle(400, 700, 9, 1);
-            moveObstacle(0, 300, 10, 2);
-            moveObstacle(350, 600, 11, 3);
-            moveObstacle(200, 500, 12, 4);
-            moveObstacle(200, 500, 13, 5);
-            moveObstacle(0, 200, 14, 6);
-            moveObstacle(500, 700, 15, 7);
-            moveObstacle(300, 500, 16, 8);
-            moveObstacle(0, 400, 17, 9);
-            moveObstacle(0, 300, 18, 10);
-            moveObstacle(300, 500, 19, 11);
-            moveObstacle(600, 700, 20, 12);
+            moveObstacle(50, 180, 8, 0);
+            moveObstacle(320, 500, 9, 1);
+            moveObstacle(20, 200, 10, 2);
+            moveObstacle(420, 500, 11, 3);
+            moveObstacle(600, 670, 12, 4);
+            moveObstacle(620, 645, 13, 5);
+            moveObstacle(120, 200, 14, 6);
+            moveObstacle(700, 720, 15, 7);
+            moveObstacle(270, 400, 16, 8);
+            moveObstacle(520, 580, 17, 9);
+            moveObstacle(170, 300, 18, 10);
+            moveObstacle(420, 520, 19, 11);
+            moveObstacle(640, 680, 20, 12);
 
             // moving the hole
             if (reverseDirection) {
@@ -916,19 +919,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         
     }
 
-    double calculateDragVelocity() {
-        int estimatedBallSpeedX =  (dragStartX - currentMouseX) / 2;
-        int estimatedBallSpeedY = (dragStartY - currentMouseY)  / 2;;
-        return Math.sqrt(estimatedBallSpeedX * estimatedBallSpeedX + estimatedBallSpeedY * estimatedBallSpeedY);
-    }
-
-    int meterHeight = 300;
-    int velocity = (int) Math.round(calculateDragVelocity());
-    int scaledVelocityInt = (int) Math.round(scaledVelocity());
-
-    double scaledVelocity (){
-        return (velocity / maxSpeed) * meterHeight;
-    }
+    
 
 
     // Unused but required by the interface

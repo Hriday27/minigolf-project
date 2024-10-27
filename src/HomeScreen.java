@@ -9,7 +9,7 @@ public class HomeScreen extends JFrame {
     public HomeScreen() {
         // Set up frame properties
         setTitle("Minigolf Menu");
-        setSize(440, 500);
+        setSize(500, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocation(0, 0);  // Top-left corner
         setLayout(null);
@@ -24,7 +24,7 @@ public class HomeScreen extends JFrame {
         // Create the heading label and add it to the background panel
         JLabel headingLabel = new JLabel("Minigolf", SwingConstants.CENTER);
         headingLabel.setFont(new Font("Monospaced", Font.BOLD, 60));
-        headingLabel.setBounds(20, 50, 400, 100);
+        headingLabel.setBounds(40, 50, 400, 100);
         headingLabel.setForeground(Color.white);  // Adjust text color for visibility
         backgroundPanel.add(headingLabel);
 
@@ -40,7 +40,7 @@ public class HomeScreen extends JFrame {
         for (int i = 0; i < buttonLabels.length; i++) {
             JButton button = new JButton(buttonLabels[i]);
             button.setFont(new Font("Monospaced", Font.BOLD, 14));
-            button.setBounds(50, yPos, 330, 50);
+            button.setBounds(50, yPos, 380, 50);
             button.setBackground(buttonColors[i]);
             button.setForeground(textColors[i]);
             button.setFocusPainted(false);
