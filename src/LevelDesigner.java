@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -345,7 +346,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             holeX = 370;
             holeY = 270;
             ballY = 550;
-            ballX = 30;
+            ballX = 50;
 
             //two teleporter panels
             obstacles.add(new Rectangle(0,50,100,50));
@@ -793,16 +794,14 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
                     exploded = true;
                     // explosion logic for the explosion sound effect
                     try {
-
-                        // Open an audio input stream.
-                        File soundFile = new File("sounds/explosion.wav");
-                        AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
+                        // Load the audio file from resources
+                        InputStream soundStream = getClass().getResourceAsStream("/explosion.wav");
+                        AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundStream);
                         Clip clip = AudioSystem.getClip();
 
-                        // Start playing the sound.
+                        // Start playing the sound
                         clip.open(audioStream);
                         clip.start();
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
