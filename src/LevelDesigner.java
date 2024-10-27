@@ -345,7 +345,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             holeX = 370;
             holeY = 270;
             ballY = 550;
-            ballX = 300;
+            ballX = 30;
 
             //two teleporter panels
             obstacles.add(new Rectangle(0,50,100,50));
