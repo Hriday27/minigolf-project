@@ -360,7 +360,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             holeX = 370;
             holeY = 270;
             ballY = 550;
-            ballX = 20;
+            ballX = 300;
 
             //two teleporter panels
             obstacles.add(new Rectangle(0,50,100,50));
@@ -609,23 +609,23 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
                 // Draw the yellow section (velocity 0-100)
                 if (mappedVelocity > 0 && mappedVelocity <= 100) {
-                    g.setColor(Color.yellow);
+                    g.setColor(Color.green);
                     g.fillRect(meterX, meterBaseY - mappedVelocity, meterWidth, mappedVelocity);
                     filledHeight = mappedVelocity;
                 } else if (mappedVelocity > 100) {
-                    g.setColor(Color.yellow);
+                    g.setColor(Color.green);
                     g.fillRect(meterX, meterBaseY - 100, meterWidth, 100);
                     filledHeight = 100;
                 }
 
                 // Draw the green section (velocity 100-200)
                 if (mappedVelocity > 100 && mappedVelocity <= 200) {
-                    g.setColor(Color.green);
+                    g.setColor(Color.yellow);
                     int greenHeight = mappedVelocity - 100;
                     g.fillRect(meterX, meterBaseY - filledHeight - greenHeight, meterWidth, greenHeight);
                     filledHeight += greenHeight;
                 } else if (mappedVelocity > 200) {
-                    g.setColor(Color.green);
+                    g.setColor(Color.yellow);
                     g.fillRect(meterX, meterBaseY - filledHeight - 100, meterWidth, 100);
                     filledHeight += 100;
                 }
@@ -913,14 +913,21 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     // Handle mouse release (end of the shot)
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (ballInHole) 
+        totalTries = totalTries;
+        if (exploded)
+        totalTries = totalTries;
+        else 
         totalTries += 1;
         int dragEndX = e.getX();
         int dragEndY = e.getY();
+    
+        
 
         // Calculate the speed of the ball based on the drag distance
         ballSpeedX = (dragStartX - dragEndX) / 5.0;
         ballSpeedY = (dragStartY - dragEndY) / 5.0;
-        System.out.println("ball speed x " + ballSpeedX + " ball speed y " + ballSpeedY);
+        
         // Start the animation
         animationTimer.start();
         repaint();
