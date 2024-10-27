@@ -834,7 +834,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         if (new Rectangle(ballX - ballRadius, ballY - ballRadius, ballRadius * 2, ballRadius * 2).
         intersects(new Rectangle(holeX, holeY, holeWidth, holeHeight)) && Math.abs(ballSpeedX) < 20 && 
         Math.abs(ballSpeedY) < 20) {
-            System.out.println("Ball in the hole");
+            
             ballInHole = true;
         }
     }
