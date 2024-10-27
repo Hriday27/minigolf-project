@@ -580,7 +580,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
                 int filledHeight = 0;
 
                 // DRAW THE SPEED BAR
-                // Draw the yellow section (velocity 0-100)
+                // Draw the green section (velocity 0-100)
                 if (mappedVelocity > 0 && mappedVelocity <= 100) {
                     g.setColor(Color.green);
                     g.fillRect(meterX, meterBaseY - mappedVelocity, meterWidth, mappedVelocity);
@@ -591,7 +591,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
                     filledHeight = 100;
                 }
 
-                // Draw the green section (velocity 100-200)
+                // Draw the yellow section (velocity 100-200)
                 if (mappedVelocity > 100 && mappedVelocity <= 200) {
                     g.setColor(Color.yellow);
                     int greenHeight = mappedVelocity - 100;

@@ -13,6 +13,7 @@ public class HomeScreen extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocation(0, 0);  // Top-left corner
         setLayout(null);
+        setResizable(false);
 
         // Create a JPanel with a scaled GIF background
         BackgroundPanel backgroundPanel = new BackgroundPanel("golf-field.gif");
