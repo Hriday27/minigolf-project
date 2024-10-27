@@ -72,12 +72,12 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
         // Generate the frame borders
         generateObstacles(levelNumber);
-        //generateRandomObstacles();
+       
         generatePowerUps(levelNumber);
-        //generateObstacles(obstacles, obstacleTextures); // Add random obstacles to the frame
         
         // initialise images
         try{
+            // load different textures for different levels
             if (levelNumber == 1) {
                 obstacleTexture = ImageIO.read(getClass().getResource("/WhiteWall.jpg"));
             } else if (levelNumber == 2) { 
@@ -87,6 +87,8 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             } else if (levelNumber == 4) {
                 obstacleTexture = ImageIO.read(getClass().getResource("/cloud2.png"));
             }
+
+            // the remaining textures remain the same
             speedUpTexture = ImageIO.read(getClass().getResource("/Speed Up.png"));
             speedDownTexture = ImageIO.read(getClass().getResource("/Speed Down.png"));
             teleportTexture = ImageIO.read(getClass().getResource("/teleportPanel.png"));
@@ -100,6 +102,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         // constants for window positioning
         int frameX = (screenWidth-levelWidth)/2;
         int frameY = (screenHeight-levelHeight)/2;
+
         // the main game frame
         mainGameFrame = new JFrame("Mini Golf Game");
         mainGameFrame.setUndecorated(true);
@@ -166,7 +169,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         //this.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
 
         try {
-            // Load the background image
+            // Load the background image as per the level
             if (levelNumber == 1) {
                 BufferedImage background = ImageIO.read(getClass().getResource("/texture4.jpg"));
                 ImagePanel ip = new ImagePanel(background);
@@ -182,30 +185,21 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
                 ImagePanel ip = new ImagePanel(background);
                 ip.setBounds(0, 0, 800, 800);
                 
-                // Add background to the DEFAULT layer
                 layeredPane.add(ip, JLayeredPane.DEFAULT_LAYER);
-                
-                // Add the LevelDesigner game to the PALETTE layer (above background)
                 layeredPane.add(this, JLayeredPane.PALETTE_LAYER);
             } else if (levelNumber == 3) {
                 BufferedImage background = ImageIO.read(getClass().getResource("/SpaceBG2.png"));
                 ImagePanel ip = new ImagePanel(background);
                 ip.setBounds(0, 0, 800, 800);
                 
-                // Add background to the DEFAULT layer
                 layeredPane.add(ip, JLayeredPane.DEFAULT_LAYER);
-                
-                // Add the LevelDesigner game to the PALETTE layer (above background)
                 layeredPane.add(this, JLayeredPane.PALETTE_LAYER);
             } else if (levelNumber == 4) {
                 BufferedImage background = ImageIO.read(getClass().getResource("/tornado.png"));
                 ImagePanel ip = new ImagePanel(background);
                 ip.setBounds(0, 0, 800, 800);
-                
-                // Add background to the DEFAULT layer
+
                 layeredPane.add(ip, JLayeredPane.DEFAULT_LAYER);
-                
-                // Add the LevelDesigner game to the PALETTE layer (above background)
                 layeredPane.add(this, JLayeredPane.PALETTE_LAYER);
             }
             
@@ -227,13 +221,14 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         mainGameFrame.setVisible(true);
     }
 
+    // map the speed of the ball to the height of the speed bar
     public static int convertValue(int value, int min1, int max1, int min2, int max2) {
         return min2 + ((value - min1) * (max2 - min2)) / (max1 - min1);
     }
 
     public void generatePowerUps(Integer levelNumber) {
         if(levelNumber == 4) {
-            
+            // no powerups for level 4
         } else if (levelNumber == 1) {
 
             powerUps.add(new Rectangle(550,200,40,40));
@@ -287,29 +282,19 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         obstacles.add(new Rectangle(0, getHeight() - 10, getWidth(), 10));
         obstacleType.add(1); // Add corresponding type
 
-        // Custom obstacle
-        /*obstacles.add(new Rectangle(50, 50, 100, 100));
-        obstacleType.add(2); // Add corresponding type for teleport obstacle
-
-        obstacles.add(new Rectangle(600, 500, 100, 100));
-        obstacleType.add(2); // Add corresponding type for teleport obstacle
-
-        obstacles.add(new Rectangle(300,500,100,100));
-        obstacleType.add(3); // Add corresponding type for teleport obstacle*/
-
         if (levelNumber == 1) {
             ballX = 50;
             ballY = 550;
             
             obstacles.add(new Rectangle(0, 450,300, 40));
             obstacles.add(new Rectangle(60,350, 300, 40));
-            obstacles.add(new Rectangle(360,350, 40, 240));
+            obstacles.add(new Rectangle(360,350, 40, 250));
             obstacles.add(new Rectangle(0, 250, 500, 40)); 
             obstacles.add(new Rectangle(500,150, 40, 400));
             obstacles.add(new Rectangle(540,510, 150, 40));
             obstacles.add(new Rectangle(540,350, 150, 40));
-            obstacles.add(new Rectangle(640,430, 150, 40));
-            obstacles.add(new Rectangle(640,250, 150, 40));
+            obstacles.add(new Rectangle(640,430, 160, 40));
+            obstacles.add(new Rectangle(640,250, 160, 40));
             obstacles.add(new Rectangle(500,0, 40, 100));
             obstacles.add(new Rectangle(200,50, 40, 150));
             obstacles.add(new Rectangle(350,60, 150, 40));
@@ -527,19 +512,6 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         }
     }
 
-    // Generate random obstacles
-    public void generateRandomObstacles() {
-        Random rand = new Random();
-        for (int i = 0; i < 5; i++) { // Generate 5 random rectangles
-            int rectX = rand.nextInt(700); // Random x position
-            int rectY = rand.nextInt(500); // Random y position
-            int rectWidth = rand.nextInt(50) + 50; // Random width between 50 and 100
-            int rectHeight = rand.nextInt(50) + 50; // Random height between 50 and 100
-            obstacles.add(new Rectangle(rectX, rectY, rectWidth, rectHeight));
-            obstacleType.add(1);
-        }
-    }
-
     
 
     @Override
@@ -607,6 +579,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
                 // Initialize cumulative height (how much of the bar has been filled so far)
                 int filledHeight = 0;
 
+                // DRAW THE SPEED BAR
                 // Draw the yellow section (velocity 0-100)
                 if (mappedVelocity > 0 && mappedVelocity <= 100) {
                     g.setColor(Color.green);
@@ -642,6 +615,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
 
             } else {
+                // the ball is in the hole, so drawing a WIN image.
                 g.drawImage(ballInHoleTexture, 0,0,levelWidth,levelHeight,null);
                 JLabel youWon = new JLabel("You WON!!");
                 youWon.setBounds(80 + levelWidth, 200, 300, 30);
@@ -684,6 +658,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         }
     }
 
+    // the array for deciding which direction each obstacle moves in level 4
     boolean reverseDirection = true;
     ArrayList<Boolean> movingObstaclesRD = new ArrayList<>(Arrays.asList(true,false,true,true, false, true, true, true, true, true,true,true,true));
 
@@ -722,7 +697,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             }
         }
         
-        
+        // repaint to update the changes, show ball motion, move obstacles
         repaint();
     }
 
@@ -913,26 +888,25 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     // Handle mouse release (end of the shot)
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (ballInHole) 
-        totalTries = totalTries;
-        if (exploded)
-        totalTries = totalTries;
-        else 
-        totalTries += 1;
+        if(!ballInHole && !exploded) {
+            totalTries += 1;
+        }
+
         int dragEndX = e.getX();
         int dragEndY = e.getY();
-    
-        
+
+
 
         // Calculate the speed of the ball based on the drag distance
         ballSpeedX = (dragStartX - dragEndX) / 5.0;
         ballSpeedY = (dragStartY - dragEndY) / 5.0;
-        
+
         // Start the animation
         animationTimer.start();
         repaint();
         scoreCounter.setText("Your Score is: " + totalTries);
     }
+
 
     @Override
     public void mouseDragged(MouseEvent e) {
@@ -950,12 +924,12 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
     int meterHeight = 300;
     int velocity = (int) Math.round(calculateDragVelocity());
+    int scaledVelocityInt = (int) Math.round(scaledVelocity());
 
     double scaledVelocity (){
         return (velocity / maxSpeed) * meterHeight;
     }
 
-    int scaledVelocityInt = (int) Math.round(scaledVelocity());
 
     // Unused but required by the interface
     public void mouseMoved(MouseEvent e) {}
