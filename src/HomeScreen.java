@@ -4,13 +4,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
+
 public class HomeScreen extends JFrame {
     public HomeScreen() {
         // Set up frame properties
         setTitle("Minigolf Menu");
         setSize(440, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        setLocation(0, 0);  // Top-left corner
         setLayout(null);
 
         // Create a JPanel with a scaled GIF background
@@ -35,7 +36,6 @@ public class HomeScreen extends JFrame {
         Color[] textColors = {Color.BLACK, Color.BLACK, Color.WHITE, Color.WHITE};
 
         int yPos = 150;
-        int x = 0;
         for (int i = 0; i < buttonLabels.length; i++) {
             JButton button = new JButton(buttonLabels[i]);
             button.setFont(new Font("Monospaced", Font.BOLD, 14));
@@ -45,7 +45,6 @@ public class HomeScreen extends JFrame {
             button.setFocusPainted(false);
             button.setBorderPainted(false);
             button.setOpaque(true);
-            
             
             // Hover effect
             final int index = i;
@@ -74,7 +73,7 @@ public class HomeScreen extends JFrame {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    LevelDesigner level = new LevelDesigner(index+1);
+                    LevelDesigner level = new LevelDesigner(index + 1);
                 }
             });
 

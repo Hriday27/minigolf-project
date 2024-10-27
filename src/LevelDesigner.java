@@ -55,6 +55,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
 
     int totalTries;
     private JLabel scoreCounter;
+    JFrame mainGameFrame;
 
     public LevelDesigner(Integer levelNumber) {
         levelNum = levelNumber;
@@ -100,7 +101,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         int frameX = (screenWidth-levelWidth)/2;
         int frameY = (screenHeight-levelHeight)/2;
         // the main game frame
-        JFrame mainGameFrame = new JFrame("Mini Golf Game");
+        mainGameFrame = new JFrame("Mini Golf Game");
         mainGameFrame.setUndecorated(true);
         mainGameFrame.setLocation(frameX, frameY); // Centers the frame on the screen
         
@@ -135,6 +136,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             public void actionPerformed(ActionEvent e) {
                 // Close the application when the button is clicked
                 mainGameFrame.dispose();
+                animationTimer.stop();
             }
         });
 
@@ -233,11 +235,14 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         if(levelNumber == 4) {
             
         } else if (levelNumber == 1) {
+
             powerUps.add(new Rectangle(550,200,40,40));
             powerUpType.add(2);
             powerUps.add(new Rectangle(50,300,40,40));
             powerUpType.add(1);
+
         } else if (levelNumber == 2) {
+
             powerUps.add(new Rectangle(300,380,40,40));
             powerUpType.add(1);
             powerUps.add(new Rectangle(100,300,40,40));
@@ -250,13 +255,16 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             powerUpType.add(2);
             powerUps.add(new Rectangle(550,75,40,40));
             powerUpType.add(2);
+
         } else if (levelNumber == 3) {
+            
             powerUps.add(new Rectangle(160,60,40,40));
             powerUpType.add(2);
             powerUps.add(new Rectangle(690,55,40,40));
             powerUpType.add(1);
             powerUps.add(new Rectangle(460,490,40,40));
             powerUpType.add(1);
+
         }
         
     }
@@ -346,6 +354,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             obstacleType.add(3);
             obstacleType.add(3);
             obstacleType.add(3);
+
         } else if (levelNumber == 3) { 
             // change hole location
             holeX = 370;
@@ -494,26 +503,26 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             obstacles.add(new Rectangle(0,100,150,40)); // 21
             obstacleType.add(1);
 
-            obstacles.add(new Rectangle(0,0,100,30)); // 21
+            obstacles.add(new Rectangle(0,0,100,30));
             obstacleType.add(3);
-            obstacles.add(new Rectangle(100,0,100,30)); // 21
+            obstacles.add(new Rectangle(100,0,100,30)); 
             obstacleType.add(3);
-            obstacles.add(new Rectangle(200,0,100,30)); // 21
+            obstacles.add(new Rectangle(200,0,100,30));
             obstacleType.add(3);
-            obstacles.add(new Rectangle(300,0,100,30)); // 21
+            obstacles.add(new Rectangle(300,0,100,30));
             obstacleType.add(3);
-            obstacles.add(new Rectangle(400,0,100,30)); // 21
+            obstacles.add(new Rectangle(400,0,100,30)); 
             obstacleType.add(3);
-            obstacles.add(new Rectangle(500,0,100,30)); // 21
+            obstacles.add(new Rectangle(500,0,100,30));
             obstacleType.add(3);
-            obstacles.add(new Rectangle(600,0,100,30)); // 21
+            obstacles.add(new Rectangle(600,0,100,30));
             obstacleType.add(3);
-            obstacles.add(new Rectangle(700,0,100,30)); // 21
+            obstacles.add(new Rectangle(700,0,100,30)); 
             obstacleType.add(3);
 
-            obstacles.add(new Rectangle(700,300,100,40)); // 21
+            obstacles.add(new Rectangle(700,300,100,40));
             obstacleType.add(1);
-            obstacles.add(new Rectangle(0,200,100,40)); // 21
+            obstacles.add(new Rectangle(0,200,100,40)); 
             obstacleType.add(1);
         }
     }
@@ -642,30 +651,31 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
                 this.add(youWon);
             }
         } else {
+            // draw explosion of tnt image
             g.drawImage(explodedTexture, 0,0,levelWidth,levelHeight,null);
 
+            // you lost label
             JLabel youLost = new JLabel("Death by TNT");
             youLost.setBounds(60 + levelWidth, 550, 300, 30);
             youLost.setFont(new Font("Monospaced", Font.BOLD, 24));
             youLost.setForeground(Color.red);
             this.add(youLost);
 
+            // restart button
             JButton restart = new JButton("Restart");
             restart.setBounds(50 + levelWidth, 475, 200, 50);
             restart.setFont(new Font("Monospaced", Font.BOLD, 24));
             restart.setBackground(Color.red);
             restart.setForeground(Color.white);
             restart.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            restart.setFocusPainted(false); // Remove focus paint on click
-             // Change cursor to hand on hover
+            restart.setFocusPainted(false); 
 
             // Add an ActionListener to the close button
             restart.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // Close the application when the button is clicked
-                    Level1 l1 = new Level1();
-                    l1.main(null);
+                    LevelDesigner l1 = new LevelDesigner(levelNum);
                 }
             });
             this.add(restart);
@@ -683,6 +693,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         moveBall();
         
         if (levelNum == 4) {
+            // for the tornado level move the different obstacles
             moveObstacle(0, 400, 8, 0);
             moveObstacle(400, 700, 9, 1);
             moveObstacle(0, 300, 10, 2);
@@ -696,6 +707,8 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
             moveObstacle(0, 300, 18, 10);
             moveObstacle(300, 500, 19, 11);
             moveObstacle(600, 700, 20, 12);
+
+            // moving the hole
             if (reverseDirection) {
                 holeX += 1;
                 if (holeX > 500) {
@@ -714,6 +727,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     }
 
     public void moveObstacle(int startX, int endX, int movingObstacleNumber, int movingObstacleBool) {
+        // same logic as moving the golf ball
         if (movingObstaclesRD.get(movingObstacleBool)) {
             obstacles.get(movingObstacleNumber).x += 1;
             if (obstacles.get(movingObstacleNumber).x > endX) {
@@ -785,6 +799,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
                         }
                     }
 
+                    // teleportation logic
                     if(indices.get(0) == count2) {
                         ballSpeedX = 0;
                         ballSpeedY = 0;
@@ -798,27 +813,23 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
                     }
                 } else if (obstacleType.get(count2) == 3) {
                     exploded = true;
-                    
+                    // explosion logic for the explosion sound effect
                     try {
-                        // Open an audio input stream.
 
+                        // Open an audio input stream.
                         File soundFile = new File("sounds/explosion.wav");
                         AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
-            
-                        // Get a sound clip resource.
                         Clip clip = AudioSystem.getClip();
-            
-                        // Open the audio clip and load the samples from the audio input stream.
-                        clip.open(audioStream);
-            
+
                         // Start playing the sound.
+                        clip.open(audioStream);
                         clip.start();
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
                     // Resolve the collision based on the original position
-                    
                     resolveCollision(originalX, originalY, obstacle);
                 } 
                 
@@ -829,6 +840,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         // Check for collisions with the power ups
         int count = 0;
         for (Rectangle powerUp: powerUps) {
+            // power ups logic to increase or decrease the ball speed
             if(new Rectangle(ballX - ballRadius, ballY - ballRadius, ballRadius * 2, ballRadius * 2).intersects(powerUp) &&
             powerUpType.get(count) == 1) {
                 ballSpeedX *= 10;
@@ -850,6 +862,7 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         }
     }
 
+    // make the ball move a little slower
     private void limitBallSpeed() {
             
         double speed = Math.sqrt(ballSpeedX * ballSpeedX + ballSpeedY * ballSpeedY);
@@ -866,10 +879,10 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     private void resolveCollision(int originalX, int originalY, Rectangle obstacle) {
         // Determine which side the ball hit the obstacle
         // Calculate the overlap on both axes
-        int overlapLeft = (originalX + ballRadius) - obstacle.x; // Right side of the ball to the left side of the obstacle
-        int overlapRight = (obstacle.x + obstacle.width) - (originalX - ballRadius); // Left side of the ball to the right side of the obstacle
-        int overlapTop = (originalY + ballRadius) - obstacle.y; // Bottom side of the ball to the top side of the obstacle
-        int overlapBottom = (obstacle.y + obstacle.height) - (originalY - ballRadius); // Top side of the ball to the bottom side of the obstacle
+        int overlapLeft = (originalX + ballRadius) - obstacle.x;
+        int overlapRight = (obstacle.x + obstacle.width) - (originalX - ballRadius); 
+        int overlapTop = (originalY + ballRadius) - obstacle.y; 
+        int overlapBottom = (obstacle.y + obstacle.height) - (originalY - ballRadius);
 
         // Find the smallest overlap to determine the direction of the collision
         int minOverlap = Math.min(Math.min(overlapLeft, overlapRight), Math.min(overlapTop, overlapBottom));
@@ -914,10 +927,6 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
         scoreCounter.setText("Your Score is: " + totalTries);
     }
 
-   
-
-    
-
     @Override
     public void mouseDragged(MouseEvent e) {
         currentMouseX = e.getX();
@@ -933,7 +942,6 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     }
 
     int meterHeight = 300;
-
     int velocity = (int) Math.round(calculateDragVelocity());
 
     double scaledVelocity (){
@@ -941,7 +949,6 @@ public class LevelDesigner extends JPanel implements MouseListener, MouseMotionL
     }
 
     int scaledVelocityInt = (int) Math.round(scaledVelocity());
-
 
     // Unused but required by the interface
     public void mouseMoved(MouseEvent e) {}
